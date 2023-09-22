@@ -80,6 +80,9 @@ const ITokenGate = {
 const ProviderTokenEx = {
   wabi: require("@/abis/ProviderToken.json"), // wrapped abi
 };
+const ProviderLocalNounsMinter = {
+  wabi: require("@/abis/LocalNounsMinter.json"), // wrapped abi
+};
 // const LocalNounsToken = {
 //   wabi: require("@/abis/LocalNounsToken.json"), // wrapped abi
 // };
@@ -274,4 +277,16 @@ export const useTokenNetworkContext = (
   tokenAddress: string,
 ) => {
   return _useNetworkContext(chainId, tokenAddress, getTokenContract);
+};
+
+export const getLocalNounsMinterContract = (
+  address: string,
+  provider: ProviderOrSigner,
+): ethers.Contract => {
+  const tokenContract = new ethers.Contract(
+    address,
+    ProviderLocalNounsMinter.wabi.abi,
+    provider,
+  );
+  return tokenContract;
 };

@@ -49,4 +49,8 @@ export default defineComponent({
 a {
   @apply cursor-pointer;
 }
+
+select {
+  @apply border-2 border-gray-400 rounded;
+}
 </style>

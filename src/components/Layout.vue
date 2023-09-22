@@ -1,9 +1,7 @@
 <template>
   <div class="layout">
     <div id="nav">
-      <!--
-      <img class="mb-4" src="@/assets/banner.jpeg" />
-      -->
+      <!-- <img class="mb-4" src="@/assets/banner.jpeg" /> -->
       <router-link :to="localizedUrl('/')" class="font-londrina text-2xl">{{
         $t("nav.top")
       }}</router-link>

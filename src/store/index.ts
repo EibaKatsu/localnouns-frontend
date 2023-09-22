@@ -2,6 +2,7 @@ import { createStore } from "vuex";
 import { User } from "firebase/auth";
 import { startMonitoringMetamask } from "@/utils/MetaMask";
 import { auth } from "@/utils/firebase";
+import { ethers } from "ethers";
 
 interface State {
   ethereum: any | null;
@@ -54,6 +55,14 @@ export default createStore<State>({
         return "";
       }
       return account.substring(0, 6) + "..." + account.substring(38);
+    },
+    getSigner: (state: State) => async (chainId: string) => {
+      if (state.account && state.chainId == chainId) {
+        const provider = new ethers.BrowserProvider(state.ethereum);
+        const signer = await provider.getSigner();
+        return signer;
+      }
+      return null;
     },
   },
   actions: {},

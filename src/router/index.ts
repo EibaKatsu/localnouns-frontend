@@ -20,6 +20,7 @@ const routeChildren: Array<RouteRecordRaw> = [
       network: "mumbai",
       tokenAddress: addresses.localNounsToken["mumbai"],
       assetProvider: "localProvider",
+      minterAddress: addresses.localNounsMinter["mumbai"],
       // network: "localhost",
       // tokenAddress: addresses.localNounsToken["localhost"],
     },

@@ -1,4 +1,5 @@
 import languages from "@/i18n/languages";
+import {prefecture_en as prefecture} from "@/i18n/prefectures";
 
 const lang = {
   nav: {
@@ -19,6 +20,16 @@ const lang = {
   mint: {
     publicSale: "Now On Public Sale",
     alSale: "Now On AL Sale",
+    total: "Total",
+    mint: "Mint",
+    connectWallet: "Connect Wallet from above right button.",
+    recentlyMinted: "Recently minted LocalNouns.⌐◨-◨",
+  },
+  prefectures: {
+    prefectures: "Prefecture",
+  },
+  numOfMint: {
+    numOfMint: "Quantity",
   },
   commingSoon: {
     commingSoon: "Comming Soon",
@@ -76,6 +87,7 @@ const lang = {
   notFoundMessage:
     "404: This is not the person, place, or thing you're looking for...",
   languages,
+  prefecture,
 };
 
 export default lang;

@@ -1,4 +1,5 @@
 import languages from "@/i18n/languages";
+import {prefecture_ja as prefecture} from "@/i18n/prefectures";
 
 const lang = {
   nav: {
@@ -19,6 +20,16 @@ const lang = {
   mint: {
     publicSale: "パブリックセール中",
     alSale: "ALセール中",
+    total: "合計",
+    mint: "ミント",
+    connectWallet: "右上の「接続」ボタンからウォレット接続してください",
+    recentlyMinted: "産まれたてのLocalNounsたちです.⌐◨-◨",
+  },
+  prefectures: {
+    prefectures: "都道府県",
+  },
+  numOfMint: {
+    numOfMint: "ミント数",
   },
   commingSoon: {
     commingSoon: "近日公開",
@@ -72,6 +83,7 @@ const lang = {
     title: "関連作品",
   },
   languages,
+  prefecture,
 };
 
 export default lang;
