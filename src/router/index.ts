@@ -2,40 +2,60 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Layout from "@/components/Layout.vue";
 import NotFound from "@/components/NotFound.vue";
 
-import Home from "@/views/Home.vue";
+// import Home from "@/views/Home.vue";
 import Mint from "@/views/Mint.vue";
-import ComingSoon from "@/views/ComingSoon.vue";
+import List from "@/views/List.vue";
+import Owner from "@/views/Owner.vue";
+// import ComingSoon from "@/views/ComingSoon.vue";
 import Shop from "@/views/Shop.vue";
+import About from "@/views/About.vue";
 import { addresses } from "@/utils/addresses";
 
+const network = "mumbai";
 const routeChildren: Array<RouteRecordRaw> = [
   {
     path: "",
-    component: Home,
+    component: List,
+    props: {
+      network: network,
+      tokenAddress: addresses.localNounsToken[network],
+    },
   },
   {
     path: "mint",
     component: Mint,
     props: {
-      network: "mumbai",
-      tokenAddress: addresses.localNounsToken["mumbai"],
+      network: network,
+      tokenAddress: addresses.localNounsToken[network],
       assetProvider: "localProvider",
-      minterAddress: addresses.localNounsMinter["mumbai"],
-      // network: "localhost",
-      // tokenAddress: addresses.localNounsToken["localhost"],
+      minterAddress: addresses.localNounsMinter[network],
     },
   },
   {
-    path: "sale",
-    component: ComingSoon,
+    path: "list",
+    component: List,
+    props: {
+      network: network,
+      tokenAddress: addresses.localNounsToken[network],
+      test: true,
+    },
   },
   {
-    path: "trade",
-    component: ComingSoon,
+    path: "owner",
+    component: Owner,
+    props: {
+      network: network,
+      tokenAddress: addresses.localNounsToken[network],
+      test: true,
+    },
   },
   {
     path: "shop",
     component: Shop,
+  },
+  {
+    path: "about",
+    component: About,
   },
 ];
 

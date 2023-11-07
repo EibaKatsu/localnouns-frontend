@@ -25,10 +25,10 @@
           </button>
           <button
             v-else
-            @click="signIn"
             class="inline-block rounded bg-green-600 px-6 py-2.5 leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg"
           >
-            {{ $t("menu.connected") }}
+            <!-- {{ $t("menu.connected") }} -->
+            {{ account.substring(0, 6) }}...
           </button>
         </span>
         <span v-else>

@@ -1,13 +1,16 @@
 import languages from "@/i18n/languages";
-import {prefecture_ja as prefecture} from "@/i18n/prefectures";
+import { prefecture_ja as prefecture } from "@/i18n/prefectures";
 
 const lang = {
   nav: {
     top: "トップ",
     mint: "ミント",
+    list: "リスト",
+    owner: "オーナー",
     p2pSale: "P2Pセール",
     p2pTrade: "P2Pトレード",
     goods: "グッズ",
+    about: "紹介",
   },
   menu: {
     connect: "接続",
@@ -25,11 +28,66 @@ const lang = {
     connectWallet: "右上の「接続」ボタンからウォレット接続してください",
     recentlyMinted: "産まれたてのLocalNounsたちです.⌐◨-◨",
   },
+  list: {
+    description: "ここではご当地Nounsを購入することができます",
+    purchace: "購入",
+    trade: "交換",
+    onTrade: "交換可",
+    onSale: "販売中",
+    manage: "所有",
+  },
+  owner: {
+    description: "あなたの所有するご当地Nounsです",
+  },
   prefectures: {
     prefectures: "都道府県",
   },
+  listSortOrder: {
+    sortOrder: "ソート順",
+    lower: "価格が低い順",
+    higher: "価格が高い順",
+    older: "古い順",
+    newer: "新しい順",
+  },
   numOfMint: {
     numOfMint: "ミント数",
+  },
+  tokenManagement: {
+    sale: "販売設定",
+    saleDescription:
+      "P2Pセールの販売価格を設定してください。ロイヤリティ5%を含みます。",
+    setSalePrice: "0ETHより大きい価格をセットすると販売対象になります",
+    setPriceButton: "価格設定",
+    stopSaleButton: "販売停止",
+    trade: "トレード設定",
+    tradeDescription: "トレード希望の都道府県を指定してください。",
+    setTrade:
+      "トレード希望の都道府県を指定してください。交換リストに出す手数料は0.002ETH(ガス代含まず)です。",
+    setTradeButton: "トレードに出す",
+    stopTradeButton: "トレードから下げる",
+    close: "閉じる",
+    finishSetSalePrice: "販売価格設定が完了しました!",
+    finishRemoveSalePrice: "販売設定を取り消しました!",
+    validSelectPrefectures:
+      "「指定しない」またはいずれかの都道府県を選択してください",
+    finishSetTrade: "トレード設定が完了しました!",
+    finishStopTrade: "トレード設定を取り消しました!",
+  },
+  TokenSaleOrTrade: {
+    sale: "販売",
+    saleDescription: "所有者が販売価格を設定したNounのみ購入可能です。",
+    buy: "購入",
+    trade: "交換",
+    tradeDescription:
+      "あなたの所有するNounと交換します。都道府県が指定されている場合はその都道府県のNounのみ交換可能です。",
+    tradeForPrefecture: "交換希望",
+    tradeForNoun: "交換するNoun",
+    finishBuyNoun: "Nounの購入に成功しました!",
+    selectNounForTrade: "交換するNounを選んでください",
+    finishTradeNoun: "Nounの交換に成功しました!",
+  },
+  validator: {
+    validNumber: "0より大きい数値を入力してください",
   },
   commingSoon: {
     commingSoon: "近日公開",

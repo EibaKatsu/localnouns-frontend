@@ -73,9 +73,9 @@ export const startMonitoringMetamask = () => {
   getAccount().then((value) => {
     store.commit("setAccount", value);
     console.log("Eth gotAccount", store.getters.displayAccount);
-    if (store.state.ethereum.chainId) {
-      console.log("Eth already connected", store.state.ethereum.chainId);
-      store.commit("setChainId", store.state.ethereum.chainId);
+    if (store.state.ethereum.eth_chainId) {
+      console.log("Eth already connected", store.state.ethereum.eth_chainId);
+      store.commit("setChainId", store.state.ethereum.eth_chainId);
     }
   });
   if (store.getters.hasMetaMask) {

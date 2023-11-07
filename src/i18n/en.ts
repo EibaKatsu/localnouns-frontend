@@ -1,13 +1,16 @@
 import languages from "@/i18n/languages";
-import {prefecture_en as prefecture} from "@/i18n/prefectures";
+import { prefecture_en as prefecture } from "@/i18n/prefectures";
 
 const lang = {
   nav: {
     top: "Top",
     mint: "Mint",
+    list: "List",
+    owner: "Owner",
     p2pSale: "P2PSale",
     p2pTrade: "P2PTrade",
     goods: "Goods",
+    about: "About",
   },
   menu: {
     connect: "Connect",
@@ -25,11 +28,67 @@ const lang = {
     connectWallet: "Connect Wallet from above right button.",
     recentlyMinted: "Recently minted LocalNouns.⌐◨-◨",
   },
+  list: {
+    description: "You can parchace Local Nouns here.",
+    purchace: "Buy",
+    trade: "Trade",
+    onTrade: "onTrade",
+    onSale: "onSale",
+    manage: "Owner",
+  },
+  owner: {
+    description: "These are your local Nouns that you own.",
+  },
   prefectures: {
     prefectures: "Prefecture",
   },
+  listSortOrder: {
+    sortOrder: "Sort order",
+    lower: "Price lower",
+    higher: "Price higher",
+    older: "Older",
+    newer: "Newer",
+  },
   numOfMint: {
     numOfMint: "Quantity",
+  },
+  tokenManagement: {
+    sale: "Sales condition",
+    saleDescription:
+      "please set the P2P Sale price. the royalty 5% is included.",
+    setSalePrice: "Set a price greater than 0 ETH to be listed for sale",
+    setPriceButton: "Set Price",
+    stopSaleButton: "Stop Sale",
+    trade: "Trade condition",
+    tradeDescription: "Select the prefecture trade for.",
+    setTrade:
+      "please set the prefectures trade for. the commission is 0.002ETH.(Gas cost is not included.)",
+    setTradeButton: "Offer for trade",
+    stopTradeButton: "Stop Trade",
+    close: "Close",
+    finishSetSalePrice: "Finished setting sale price!",
+    finishRemoveSalePrice: "removed setting sale price!",
+    validSelectPrefectures:
+      "select `not specified` or at least one prefectureat least one prefecture",
+    finishSetTrade: "Finished setting trade condition!",
+    finishStopTrade: "Finished removing trade condition!",
+  },
+  TokenSaleOrTrade: {
+    sale: "Sale",
+    saleDescription:
+      "Only Nouns for which the owner has set a selling price can be purchased.",
+    buy: "Buy",
+    trade: "Trade",
+    tradeDescription:
+      "Exchanges for Nouns owned by you. If a prefecture is specified, only Nouns of that prefecture can be exchanged.",
+    tradeForPrefecture: "trade for",
+    tradeForNoun: "trade noun",
+    finishBuyNoun: "Successfully purchased Noun!",
+    selectNounForTrade: "Select a noun for trade",
+    finishTradeNoun: "Successfully traded Noun!",
+  },
+  validator: {
+    validNumber: "Enter a number greater than 0",
   },
   commingSoon: {
     commingSoon: "Comming Soon",

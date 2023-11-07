@@ -26,7 +26,6 @@ export default defineComponent({
     },
   },
   setup(props, context) {
-
     const numOfMint = [...Array(Number(props.limit))].map((_, a) => a + 1);
 
     const selectedValue = ref(props.limit);

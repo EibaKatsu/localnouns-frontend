@@ -32,7 +32,7 @@ export default defineComponent({
 
 #nav {
   /* padding: 30px; */
-  @apply p-8;
+  @apply p-4;
 }
 
 #nav a {

@@ -27,3 +27,4 @@ pnpm-debug.log*
 
 *debug.log
 .env
+**/serviceAccountKey.json

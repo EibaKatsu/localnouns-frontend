@@ -1,11 +1,13 @@
 <template>
   <div class="mx-auto max-w-lg p-2 text-left">
     <div v-if="lang === 'en'">
-      <p class="mb-2 font-londrina text-3xl">Official Goods Shop</p>
+      <p class="mb-2 font-londrina font-yusei text-3xl">Official Goods Shop</p>
       <div class="mb-8 space-y-2 font-pt-root font-medium">
         <p>
           Official goods are available
-          <a href="https://suzuri.jp/nounsfes" class="font-londrina underline"
+          <a
+            href="https://suzuri.jp/nounsfes"
+            class="font-londrina font-yusei underline"
             >here</a
           >.
         </p>
@@ -17,7 +19,7 @@
         <p>
           公式グッズはSUZURIの<a
             href="https://suzuri.jp/nounsfes"
-            class="font-londrina underline"
+            class="font-londrina font-yusei underline"
             >Official Goods Shop</a
           >で購入することができます。
         </p>
@@ -45,9 +47,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style>
-/* .logo {
-  height: 150px;
-} */
-</style>

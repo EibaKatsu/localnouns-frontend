@@ -1,6 +1,6 @@
 <template>
   <div class="mx-auto max-w-lg p-2 text-left">
-    <p class="mb-2 font-londrina text-3xl">
+    <p class="mb-2 font-londrina font-yusei text-3xl">
       {{ $t("commingSoon.commingSoon") }}
     </p>
     <div class="mx-auto max-w-lg p-2 text-left"></div>

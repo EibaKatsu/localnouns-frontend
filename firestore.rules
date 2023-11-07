@@ -2,40 +2,9 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /accounts/{uid} {
-      allow read, write: if false; // server-only
-      match /profile/data {
-        allow read: if true;
-        allow write: if request.auth.uid == uid;
-      }
-      match /articles/{articleId} {
-        allow read: if true;
-        allow write: if request.auth.uid == uid;
-      }
-    }
-    
-    match /users/{uid} {
-      allow read: if request.auth.uid == uid;
-      match /private/votes {
-        allow read: if request.auth.uid == uid;
-      }
-    }
-    match /vote_events/{event_id} {
-      allow read: if request.auth != null;
-      match /results/{selectionId} {
-        allow read: if request.auth != null;
-      }
-    }
-    match /nonces/{nonceId} {
-      allow read, write: if false; // server-only
-    }
-
-    match /test/{testId} {
-      allow read;
-      allow create, delete, update: if false;
-    }
     match /{document=**} {
-      allow read, write: if false;
+      allow read: if true;
+      allow write: if false;
     }
   }
 }

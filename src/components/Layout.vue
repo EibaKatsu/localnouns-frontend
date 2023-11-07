@@ -2,27 +2,33 @@
   <div class="layout">
     <div id="nav">
       <!-- <img class="mb-4" src="@/assets/banner.jpeg" /> -->
-      <router-link :to="localizedUrl('/')" class="font-londrina text-2xl">{{
+      <!-- <router-link :to="localizedUrl('/')" class="font-londrina text-2xl">{{
         $t("nav.top")
       }}</router-link>
-      |
-      <router-link :to="localizedUrl('/mint')" class="font-londrina text-2xl">{{
-        $t("nav.mint")
-      }}</router-link>
-      |
-      <router-link :to="localizedUrl('/sale')" class="font-londrina text-2xl">{{
-        $t("nav.p2pSale")
-      }}</router-link>
-      |
+      | -->
       <router-link
-        :to="localizedUrl('/trade')"
-        class="font-londrina text-2xl"
-        >{{ $t("nav.p2pTrade") }}</router-link
+        :to="localizedUrl('/mint')"
+        class="font-londrina font-yusei text-2xl"
+        >{{ $t("nav.mint") }}</router-link
       >
       |
-      <router-link :to="localizedUrl('/shop')" class="font-londrina text-2xl">{{
-        $t("nav.goods")
-      }}</router-link>
+      <router-link
+        :to="localizedUrl('/list')"
+        class="font-londrina font-yusei text-2xl"
+        >{{ $t("nav.list") }}</router-link
+      >
+      |
+      <router-link
+        :to="localizedUrl('/owner')"
+        class="font-londrina font-yusei text-2xl"
+        >{{ $t("nav.owner") }}</router-link
+      >
+      |
+      <router-link
+        :to="localizedUrl('/about')"
+        class="font-londrina font-yusei text-2xl"
+        >{{ $t("nav.about") }}</router-link
+      >
       <Languages class="mt-4" />
       <Connect />
     </div>

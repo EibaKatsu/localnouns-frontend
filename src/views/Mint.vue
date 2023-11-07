@@ -1,6 +1,8 @@
 <template>
   <div class="mx-auto max-w-lg p-2 text-left">
-    <p class="mb-2 font-londrina text-xl">{{ $t("mint.publicSale") }}</p>
+    <p class="mb-2 font-londrina font-yusei text-xl">
+      {{ $t("mint.publicSale") }}
+    </p>
     <div class="mb-8 space-y-2 font-pt-root font-medium"></div>
   </div>
 
@@ -43,13 +45,15 @@
   <div class="mb-8 space-y-2 font-pt-root font-medium"></div>
   <hr />
   <div class="mx-auto max-w-lg p-2 text-center">
-    <p class="mb-2 font-londrina text-3xl">
-      {{ `${totalSupply}` }} / {{ `${mintLimit}` }} minted
+    <p class="mb-2 font-londrina font-yusei text-3xl">
+      {{ `${totalSupply - 1}` }} / {{ `${mintLimit}` }} minted
     </p>
   </div>
 
   <div v-if="tokens.length > 0" class="mt-4">
-    <p class="mb-2 font-londrina text-s">{{ $t("mint.recentlyMinted") }}</p>
+    <p class="mb-2 font-londrina font-yusei text-s">
+      {{ $t("mint.recentlyMinted") }}
+    </p>
     <span v-for="token in tokens" :key="token.tokenId">
       <a :href="`${OpenSeaPath}/${token.tokenId}`" target="_blank">
         <img :src="token.image" class="mr-1 mb-1 inline-block w-32" />
@@ -62,6 +66,7 @@
 import { defineComponent, computed, ref } from "vue";
 import { useStore } from "vuex";
 import { useI18n } from "vue-i18n";
+import { ethers } from "ethers";
 import {
   getProvider,
   getTokenContract,
@@ -172,10 +177,11 @@ export default defineComponent({
       isMinting.value = true;
 
       try {
-        const txParams = { value: 0 };
-        // TODO LocalNounsMinter.solのmintSelectedPrefectureを複数個数のミント可能にする
+        const weiValue = ethers.parseEther(total.value.toString());
+        const txParams = { value: weiValue };
         const tx = await contract.mintSelectedPrefecture(
           selectedPrefecture.value,
+          selectedNumOfMint.value,
           txParams,
         );
         const result = await tx.wait();

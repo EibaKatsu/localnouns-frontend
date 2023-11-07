@@ -86,6 +86,9 @@ const ProviderLocalNounsMinter = {
 const ProviderLocalNounsToken = {
   wabi: require("@/abis/LocalNounsToken.json"), // wrapped abi
 };
+const ProviderLocalNounsProvider = {
+  wabi: require("@/abis/LocalNounsProvider.json"), // wrapped abi
+};
 // const LocalNounsToken = {
 //   wabi: require("@/abis/LocalNounsToken.json"), // wrapped abi
 // };
@@ -301,6 +304,18 @@ export const getLocalNounsTokenContract = (
   const tokenContract = new ethers.Contract(
     address,
     ProviderLocalNounsToken.wabi.abi,
+    provider,
+  );
+  return tokenContract;
+};
+
+export const getLocalNounsProviderContract = (
+  address: string,
+  provider: ProviderOrSigner,
+): ethers.Contract => {
+  const tokenContract = new ethers.Contract(
+    address,
+    ProviderLocalNounsProvider.wabi.abi,
     provider,
   );
   return tokenContract;
