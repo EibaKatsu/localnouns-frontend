@@ -5,12 +5,16 @@ const lang = {
   nav: {
     top: "トップ",
     mint: "ミント",
-    list: "リスト",
-    owner: "オーナー",
+    list: "一覧",
+    owner: "マイページ",
     p2pSale: "P2Pセール",
     p2pTrade: "P2Pトレード",
     goods: "グッズ",
     about: "紹介",
+    terms: "利用規約",
+    tokushoho: "特定商取引法に基づく表記",
+    explanation: "重要事項説明資料",
+    privacy: "プライバシーポリシー",
   },
   menu: {
     connect: "接続",
@@ -21,12 +25,27 @@ const lang = {
     form: "提出フォーム",
   },
   mint: {
-    publicSale: "パブリックセール中",
-    alSale: "ALセール中",
+    saleLock: "ただいまミントセールは実施しておりません",
+    publicSale: "パブリックセール中 : どなたでもミントできます",
+    alSale: "ALセール中 : 特定NFTを保有している方のみミントできます",
     total: "合計",
     mint: "ミント",
-    connectWallet: "右上の「接続」ボタンからウォレット接続してください",
+    price: "価格",
+    connectWallet: "先にウォレット接続してください",
+    notHasSpecificNFT: "このアドレスはAL対象のNFTを保持していません",
+    overMintLimit: "最大ミント数に達しました",
     recentlyMinted: "産まれたてのLocalNounsたちです.⌐◨-◨",
+    terms: "「利用規約」に同意する",
+    tokushoho: "「特定商取引法に基づく表記」に同意する",
+    explanation: "「重要事項説明資料」に同意する",
+    privacy: "「プライバシーポリシー」に同意する",
+  },
+  finishMintDialog: {
+    message: "ミント完了!!",
+    message2: "本サイトの反映には時間がかかる場合がございます",
+  },
+  errorDialog: {
+    message: "エラーが発生しました。しばらく経ってからやり直してください",
   },
   list: {
     description: "ここではご当地Nounsを購入することができます",
@@ -51,6 +70,9 @@ const lang = {
   },
   numOfMint: {
     numOfMint: "ミント数",
+  },
+  tokenDetail: {
+    owner: "所有者",
   },
   tokenManagement: {
     sale: "販売設定",

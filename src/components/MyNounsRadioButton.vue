@@ -62,9 +62,10 @@ export default defineComponent({
       });
     }
 
-    const updateValue = (element: HTMLInputElement, tokenId: string) => {
-      if (element.checked) {
+    const updateValue = (event: { target: HTMLSelectElement }, tokenId: string) => {
+      if (event.target.value) {
         selectedValue.value = tokenId;
+        console.log("MyNounsRadioButton:updateValue", tokenId);
         context.emit("updateValues", selectedValue.value);
       }
     };

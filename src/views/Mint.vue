@@ -1,64 +1,207 @@
 <template>
   <div class="mx-auto max-w-lg p-2 text-left">
-    <p class="mb-2 font-londrina font-yusei text-xl">
-      {{ $t("mint.publicSale") }}
-    </p>
+    <div v-if="!account">
+      <p class="mb-2 font-londrina font-yusei text-xl">
+        {{ $t("mint.connectWallet") }}
+      </p>
+    </div>
+    <div v-else>
+      <p v-if="salePhase == 0" class="mb-2 font-londrina font-yusei text-xl">
+        {{ $t("mint.saleLock") }}
+      </p>
+      <p v-if="salePhase == 1" class="mb-2 font-londrina font-yusei text-xl">
+        {{ $t("mint.alSale") }}
+      </p>
+      <p v-if="salePhase == 2" class="mb-2 font-londrina font-yusei text-xl">
+        {{ $t("mint.publicSale") }}
+      </p>
+    </div>
     <div class="mb-8 space-y-2 font-pt-root font-medium"></div>
   </div>
 
-  <div class="mx-auto max-w-lg p-2 text-left">
-    <Prefectures class="mt-4" v-model="selectedPrefecture" />
-  </div>
-  <div class="mx-auto max-w-lg p-2 text-left">
-    <NumOfMint class="mt-4" limit="20" v-model="selectedNumOfMint" />
-  </div>
+  <div v-if="salePhase != 0 && account">
+    <div class="mx-auto max-w-lg p-2 text-left">
+      <Prefectures v-model="selectedPrefecture" />
+    </div>
 
-  <div class="mx-auto max-w-lg p-2 text-left">
-    <span class="ml-16 font-londrina font-yusei text-2xl">
-      {{ $t("mint.total") }}: {{ total }} ETH (+ gas fee)
-    </span>
-  </div>
+    <div class="mx-auto max-w-lg p-2 text-left">
+      <div
+        class="grid w-auto grid-cols-1 place-content-center items-center gap-2"
+      >
+        <span class="font-londrina font-yusei text-xl whitespace-nowrap">
+          {{ $t("mint.price") }}: {{ mintPrice }} ETH
+        </span>
+      </div>
+    </div>
 
-  <div class="mx-auto max-w-lg p-2 text-center">
-    <span class="ml-16 font-londrina font-yusei">
-      <span v-if="account">
-        <button
-          @click="mint"
-          class="inline-block rounded bg-green-600 px-6 py-2.5 leading-tight text-white text-3xl shadow-md transition duration-150 ease-in-out hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg"
-        >
-          {{ $t("mint.mint") }}
-        </button>
-        {{ account }}
+    <div class="mx-auto max-w-lg p-2 text-left">
+      <NumOfMint limit="10" v-model="selectedNumOfMint" />
+    </div>
+
+    <div class="mx-auto max-w-lg p-2 text-left mt-4 mb-4">
+      <span class="font-londrina font-yusei text-3xl whitespace-nowrap">
+        {{ $t("mint.total") }}: {{ total }} ETH (+ gas fee)
       </span>
-      <span v-else>
-        <button
-          class="inline-block rounded bg-gray-600 px-6 py-2.5 leading-tight text-white text-3xl shadow-md transition duration-150 ease-in-out hover:bg-gray-700 hover:shadow-lg focus:bg-gray-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-800 active:shadow-lg"
-          disabled
-        >
-          {{ $t("mint.connectWallet") }}
-        </button>
-        {{ account }}
+    </div>
+
+    <div class="mx-auto max-w-lg p-2 text-left mt-4">
+      <input type="checkbox" value="0" v-model="checkExplanation" />
+      <router-link
+        :to="localizedUrl('/explanation')"
+        target="_blank"
+        class="font-londrina font-yusei text-xl ml-1"
+        >{{ $t("mint.explanation") }}</router-link
+      >
+    </div>
+
+    <div class="mx-auto max-w-lg p-2 text-left">
+      <input type="checkbox" value="0" v-model="checkTerms" />
+      <router-link
+        :to="localizedUrl('/terms')"
+        target="_blank"
+        class="font-londrina font-yusei text-xl ml-1"
+        >{{ $t("mint.terms") }}</router-link
+      >
+    </div>
+
+    <div class="mx-auto max-w-lg p-2 text-left">
+      <input type="checkbox" value="0" v-model="checkTokushoho" />
+      <router-link
+        :to="localizedUrl('/tokushoho')"
+        target="_blank"
+        class="font-londrina font-yusei text-xl ml-1"
+        >{{ $t("mint.tokushoho") }}</router-link
+      >
+    </div>
+
+    <div class="mx-auto max-w-lg p-2 text-left">
+      <input type="checkbox" value="0" v-model="checkPrivacy" />
+      <router-link
+        :to="localizedUrl('/privacy')"
+        target="_blank"
+        class="font-londrina font-yusei text-xl ml-1"
+        >{{ $t("mint.privacy") }}</router-link
+      >
+    </div>
+
+    <div class="mx-auto max-w-lg p-2 text-left mt-1 mb-4">
+      <span class="font-londrina font-yusei">
+        <span v-if="balanceOf == 0 && salePhase == 1">
+          <!-- ALセールで特定NFTなし-->
+          <span
+            class="inline-block rounded bg-gray-600 px-6 py-2.5 leading-tight text-white text-xl shadow-md transition duration-150 ease-in-out hover:bg-gray-700 hover:shadow-lg focus:bg-gray-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-800 active:shadow-lg"
+            disabled
+          >
+            {{ $t("mint.notHasSpecificNFT") }}
+          </span>
+        </span>
+        <span v-else>
+          <span v-if="mintLimit < totalSupply + selectedNumOfMint">
+            <!-- 最大ミント数オーバー-->
+            <span
+              class="inline-block rounded bg-gray-600 px-6 py-2.5 leading-tight text-white text-xl shadow-md transition duration-150 ease-in-out hover:bg-gray-700 hover:shadow-lg focus:bg-gray-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-800 active:shadow-lg"
+              disabled
+            >
+              {{ $t("mint.overMintLimit") }}
+            </span>
+          </span>
+          <span v-else>
+            <!-- ミント中 -->
+            <span v-if="isMinting">
+              <button
+                type="button"
+                class="inline-block rounded px-6 py-2.5 leading-tight text-gray-600 shadow-md"
+                disabled
+              >
+                <img
+                  class="absolute h-3 w-8 animate-spin"
+                  src="@/assets/red160px.png"
+                />
+                <span class="ml-10">{{ $t("message.processing") }}</span>
+              </button>
+            </span>
+            <span v-else>
+              <!-- ミントボタン -->
+              <button
+                v-if="
+                  checkExplanation &&
+                  checkTerms &&
+                  checkTokushoho &&
+                  checkPrivacy
+                "
+                @click="mint"
+                class="inline-block rounded bg-green-600 px-6 py-2.5 leading-tight text-white text-3xl shadow-md transition duration-150 ease-in-out hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg"
+              >
+                {{ $t("mint.mint") }}
+              </button>
+              <!-- 各種条件チェック前 -->
+              <button
+                v-else
+                disabled
+                class="inline-block rounded bg-gray-600 px-6 py-2.5 leading-tight text-white text-3xl shadow-md transition duration-150 ease-in-out hover:bg-gray-700 hover:shadow-lg focus:bg-gray-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-800 active:shadow-lg"
+              >
+                {{ $t("mint.mint") }}
+              </button>
+            </span>
+            <a
+              v-if="hashLink && isMinting"
+              :href="hashLink"
+              target="_blank"
+              class="ml-10"
+            >
+              etherscan
+            </a>
+          </span>
+        </span>
       </span>
-    </span>
-  </div>
+    </div>
 
-  <div class="mb-8 space-y-2 font-pt-root font-medium"></div>
-  <hr />
-  <div class="mx-auto max-w-lg p-2 text-center">
-    <p class="mb-2 font-londrina font-yusei text-3xl">
-      {{ `${totalSupply - 1}` }} / {{ `${mintLimit}` }} minted
-    </p>
-  </div>
+    <!-- ミント終了時のダイアログ -->
+    <FinishMintDialog
+      :isOpen="displayInformationDialog"
+      :mintedTokenId="mintedTokenId"
+      :mintedNumber="selectedNumOfMint"
+      :hashLink="hashLink"
+      @close="closeModal(true)"
+    />
 
-  <div v-if="tokens.length > 0" class="mt-4">
-    <p class="mb-2 font-londrina font-yusei text-s">
+    <!-- エラー時のダイアログ -->
+    <ErrorDialog
+      :isOpen="displayErrorDialog"
+      :description="errorDescription"
+      @close="closeModal(true)"
+    />
+
+    <div class="mb-8 space-y-2 font-pt-root font-medium"></div>
+    <hr />
+    <div class="mx-auto max-w-lg p-2 text-center">
+      <p class="mb-2 font-londrina font-yusei text-3xl flex items-center">
+        {{ `${totalSupply}` }} / {{ `${mintLimit}` }} minted
+        <button
+          @click="reload"
+          class="inline-flex justify-center items-center rounded px-2 py-2 ml-2 w-8 h-8 leading-tight shadow-md transition duration-150 ease-in-out hover:shadow-lg hover:bg-gray-300 focus:shadow-lg focus:outline-none focus:ring-0 focus:bg-gray-300 active:shadow-lg active:bg-gray-300 border border-gray-300"
+        >
+          <img class="w-8 h-7" src="@/assets/reload.png" />
+        </button>
+      </p>
+    </div>
+
+    <p class="mb-2 font-londrina font-yusei">
       {{ $t("mint.recentlyMinted") }}
     </p>
-    <span v-for="token in tokens" :key="token.tokenId">
-      <a :href="`${OpenSeaPath}/${token.tokenId}`" target="_blank">
-        <img :src="token.image" class="mr-1 mb-1 inline-block w-32" />
-      </a>
-    </span>
+    <div
+      v-if="tokens.length > 0"
+      class="grid w-screen grid-cols-2 place-content-center items-center gap-2 sm:grid-cols-4 mt-4"
+    >
+      <span v-for="token in tokens" :key="token.tokenId">
+        <div>
+          <img :src="token.image" class="mr-1 mb-1 inline-block w-32" />
+          <p class="mb-2 font-londrina font-yusei text-s">
+            #{{ token.tokenId }}
+          </p>
+        </div>
+      </span>
+    </div>
   </div>
 </template>
 
@@ -68,15 +211,20 @@ import { useStore } from "vuex";
 import { useI18n } from "vue-i18n";
 import { ethers } from "ethers";
 import {
-  getProvider,
   getTokenContract,
   useFetchTokens,
+  useMintConditions,
   getLocalNounsMinterContract,
+  getTokenGate,
+  useCheckTokenGate,
+  getAddresses,
 } from "@/utils/const";
 import { ChainIdMap } from "@/utils/MetaMask";
-import { ALCHEMY_API_KEY } from "@/config/project";
+import { weiToEther } from "@/utils/utils";
 import Prefectures from "@/components/Prefectures.vue";
 import NumOfMint from "@/components/NumOfMint.vue";
+import FinishMintDialog from "@/components/FinishMintDialog.vue";
+import ErrorDialog from "@/components/ErrorDialog.vue";
 
 export default defineComponent({
   props: {
@@ -92,10 +240,10 @@ export default defineComponent({
     //   type: Boolean,
     //   required: true,
     // },
-    // tokenGateAddress: {
-    //   type: String,
-    //   required: true,
-    // },
+    tokenGateAddress: {
+      type: String,
+      required: true,
+    },
     // restricted: {
     //   type: String,
     // },
@@ -114,55 +262,87 @@ export default defineComponent({
   components: {
     Prefectures,
     NumOfMint,
+    FinishMintDialog,
+    ErrorDialog,
   },
-  setup(props, context) {
+  setup(props) {
     const store = useStore();
     const i18n = useI18n();
 
     const isMinting = ref(false);
+    const displayInformationDialog = ref(false);
+    const mintedTokenId = ref(99999);
+    const displayErrorDialog = ref(false);
+    const errorDescription = ref("");
+    const hashLink = ref("");
+    const checkExplanation = ref(false);
+    const checkTerms = ref(false);
+    const checkTokushoho = ref(false);
+    const checkPrivacy = ref(false);
+
     const lang = computed(() => {
       return i18n.locale.value;
     });
 
-    const provider = getProvider(props.network, ALCHEMY_API_KEY);
+    const provider = new ethers.BrowserProvider(store.state.ethereum);
 
     // RO means read only.
     const contractRO = getTokenContract(props.tokenAddress, provider);
+    // Minter
+    const minterContract = getLocalNounsMinterContract(
+      props.minterAddress,
+      provider,
+    );
+    // TokenGate
+    const tokenGateContract = getTokenGate(props.tokenGateAddress, provider);
 
-    const { fetchTokens, totalSupply, nextImage, tokens, mintLimit } =
-      useFetchTokens(props.network, props.assetProvider, provider, contractRO);
-    console.log(
-      "totalSupply, nextImage, tokens, mintLimit =",
-      totalSupply.value,
-      nextImage.value,
-      tokens.value.length,
-      mintLimit.value,
+    const { fetchTokens, totalSupply, tokens } = useFetchTokens(
+      props.network,
+      props.assetProvider,
+      provider,
+      contractRO,
     );
     fetchTokens();
 
-    provider.once("block", () => {
-      contractRO.on(
-        contractRO.filters.Transfer(),
-        async (from, to, tokenId) => {
-          console.log("*** event.Transfer calling fetchTokens");
-          console.log("from, to, tokenId=", from, to, tokenId);
-          fetchTokens();
-          context.emit("minted");
-        },
-      );
-    });
+    const {
+      salePhase,
+      mintLimit,
+      mintPriceForSpecified,
+      mintPriceForNotSpecified,
+      mintConditions,
+    } = useMintConditions(props.network, minterContract);
+
+    mintConditions();
+
+    // setInterval(() => {
+    //   fetchTokens();
+    // }, 30000); // 30秒ごとに実行
 
     const selectedPrefecture = ref(0);
-    const selectedNumOfMint = ref(20);
-    const total = computed(() => {
+    const selectedNumOfMint = ref(10);
+
+    const mintPrice = computed(() => {
       if (selectedPrefecture.value == 0) {
-        return Number(selectedNumOfMint.value) * 0.01;
+        return weiToEther(mintPriceForNotSpecified.value);
       } else {
-        return Number(selectedNumOfMint.value) * 0.03;
+        return weiToEther(mintPriceForSpecified.value);
       }
     });
 
-    const account = computed(() => store.state.account);
+    const total = computed(() => {
+      return mintPrice.value * Number(selectedNumOfMint.value);
+    });
+
+    const { balanceOf, checkTokenGate } = useCheckTokenGate(tokenGateContract);
+
+    const account = computed(() => {
+      checkTokenGate(store.state.account);
+      return store.state.account;
+    });
+
+    const reload = async () => {
+      await fetchTokens();
+    };
 
     const mint = async () => {
       const chainId = ChainIdMap[props.network];
@@ -170,10 +350,6 @@ export default defineComponent({
 
       const contract = getLocalNounsMinterContract(props.minterAddress, signer);
 
-      console.log("contract.runner", contract.runner);
-
-      console.log("contract:", contract);
-      console.log("*** minting", total.value);
       isMinting.value = true;
 
       try {
@@ -184,28 +360,77 @@ export default defineComponent({
           selectedNumOfMint.value,
           txParams,
         );
+
+        const { EtherscanBase } = getAddresses(
+          props.network,
+          props.minterAddress,
+        );
+        hashLink.value = EtherscanBase + '/tx/' + tx.hash;
+
         const result = await tx.wait();
-        console.log("mint:tx");
-        console.log("mint:gasUsed", result.gasUsed.toNumber());
+
+        // displayInformationDialog.value = true;
+        console.log("mint:gasUsed", result.gasUsed);
+
+        isMinting.value = false;
+        displayInformationDialog.value = true;
+
+        await fetchTokens();
 
         // await checkTokenGate(account.value);
       } catch (e) {
-        console.error(e);
+        console.error("mintSelectedPrefecture:", e);
+        if (e instanceof Error) {
+          errorDescription.value = "mintSelectedPrefecture:" + e.message;
+        } else {
+          errorDescription.value = "mintSelectedPrefecture:" + String(e);
+        }
+        const indexComma = errorDescription.value.indexOf("(");
+        errorDescription.value = errorDescription.value.substring(
+          0,
+          indexComma,
+        );
+        if (errorDescription.value.indexOf("user rejected action") < 0) {
+          displayErrorDialog.value = true;
+        } else {
+          isMinting.value = false;
+        }
       }
+    };
+
+    const closeModal = () => {
+      console.log("closeModal-reload");
       isMinting.value = false;
+      displayInformationDialog.value = false;
+      displayErrorDialog.value = false;
+      hashLink.value = "";
     };
 
     return {
       lang,
+      salePhase,
+      mintPrice,
       totalSupply,
       mintLimit,
+      balanceOf,
       tokens,
       total,
       selectedNumOfMint,
       selectedPrefecture,
       isMinting,
+      displayInformationDialog,
+      mintedTokenId,
+      hashLink,
+      displayErrorDialog,
+      errorDescription,
+      closeModal,
       account,
       mint,
+      reload,
+      checkExplanation,
+      checkTerms,
+      checkTokushoho,
+      checkPrivacy,
     };
   },
 });

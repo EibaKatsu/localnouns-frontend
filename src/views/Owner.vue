@@ -1,39 +1,47 @@
 <template>
-  <div class="mx-auto max-w-lg p-2 text-left">
-    <p class="mb-2 font-londrina font-yusei text-xl">
+  <div class="mx-auto max-w-lg text-left">
+    <p v-if="!account" class="font-londrina font-yusei text-xl">
+      {{ $t("mint.connectWallet") }}
+    </p>
+    <p v-else class="font-londrina font-yusei text-xl">
       {{ $t("owner.description") }}
     </p>
   </div>
-
-  <div
-    v-for="tokenGroup in groupedByPrefecture"
-    :key="tokenGroup.key"
-    class="px-2 py-1 flex flex-col items-left justify-center"
-  >
-    <p class="mb-2 font-londrina font-yusei text-3xl text-left">
-      {{ $t("prefecture." + tokenGroup[0].prefecture) }}
-    </p>
+  <div class="px-5 py-1 flex flex-col items-center justify-center mx-5">
+    <NounsMap :groupedByPrefecture="groupedByPrefecture" />
     <div
-      class="grid w-screen grid-cols-2 place-content-center items-center gap-2 sm:grid-cols-5"
+      v-for="tokenGroup in groupedByPrefecture"
+      :key="tokenGroup.key"
+      class="px-2 py-1 flex flex-col items-left justify-center"
     >
+      <p class="mb-2 font-londrina font-yusei text-3xl text-left mx-10">
+        {{ $t("prefecture." + tokenGroup[0].prefecture) }}
+      </p>
       <div
-        v-for="token in tokenGroup"
-        :key="token.key"
-        class="px-2 py-1 flex flex-col items-center justify-center"
+        class="grid w-screen grid-cols-2 place-content-center items-center gap-2 sm:grid-cols-5"
       >
-        <div @click="showTokenModal(token)" class="items-center justify-center">
-          <TokenDetail :token="token" size="S" />
+        <div
+          v-for="token in tokenGroup"
+          :key="token.key"
+          class="px-2 py-1 flex flex-col items-center justify-center"
+        >
+          <div
+            @click="showTokenModal(token)"
+            class="items-center justify-center"
+          >
+            <TokenDetail :token="token" size="S" />
+          </div>
         </div>
       </div>
-    </div>
 
-    <TokenManagement
-      v-if="selectedToken"
-      :network="network"
-      :isOpen="isManagementModalOpen"
-      :token="selectedToken"
-      @close="closeTokenModal"
-    />
+      <TokenManagement
+        v-if="selectedToken"
+        :network="network"
+        :isOpen="isManagementModalOpen"
+        :token="selectedToken"
+        @close="closeTokenModal"
+      />
+    </div>
   </div>
 </template>
 
@@ -45,6 +53,7 @@ import { getDocs, collection, query, where, Query } from "firebase/firestore";
 import { db } from "@/utils/firebase";
 import TokenDetail from "@/components/TokenDetail.vue";
 import TokenManagement from "@/components/TokenManagement.vue";
+import NounsMap from "@/components/NounsMap.vue";
 import { TOKEN } from "@/firestore/const";
 import { getPartsNameAndDescription } from "@/utils/partsDataUtil";
 import { getTokenListForTest } from "@/utils/testData";
@@ -68,6 +77,7 @@ export default defineComponent({
   components: {
     TokenDetail,
     TokenManagement,
+    NounsMap,
   },
   async setup(props) {
     const store = useStore();
@@ -108,6 +118,9 @@ export default defineComponent({
         if (accessoryName) {
           token.accessory = accessoryName.name;
           token.accessoryDescription = accessoryName.description;
+          if(accessoryName.author){
+            token.accessoryDescription += ' (' + accessoryName.author + ')';
+          }
         }
 
         const headName = getPartsNameAndDescription(
@@ -118,6 +131,9 @@ export default defineComponent({
         if (headName) {
           token.head = headName.name;
           token.headDescription = headName.description;
+          if(headName.author){
+            token.headDescription += ' (' + headName.author + ')';
+          }
         }
       }
     };
@@ -154,7 +170,12 @@ export default defineComponent({
 
     // トークンを都道府県IDでグループ化するcomputedプロパティ
     const groupedByPrefecture = computed(() => {
-      const groups = tokens.value.reduce((acc: any, token) => {
+      // 最初にtokensをtokenIdでソート
+      const sortedTokens = [...tokens.value].sort((a, b) => {
+        return Number(a.tokenId) - Number(b.tokenId);
+      });
+
+      const groups = sortedTokens.reduce((acc: any, token) => {
         // prefectureIdをキーとする
         const key = token.prefectureId;
         if (!acc[key]) {

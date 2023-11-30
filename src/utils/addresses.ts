@@ -10,6 +10,9 @@ import { addresses as localNounsMinter_mumbai } from "@/utils/addresses/localNou
 import { addresses as localNounsMinter_localhost } from "@/utils/addresses/localNounsMinter_localhost";
 import { addresses as svgHelper_mumbai } from "@/utils/addresses/svgHelper_mumbai";
 import { addresses as svgHelper_mainnet } from "@/utils/addresses/svgHelper_mainnet";
+import { addresses as tokenGate_mainnet } from "@/utils/addresses/tokenGate_mainnet";
+import { addresses as tokenGate_mumbai } from "@/utils/addresses/tokenGate_mumbai";
+import { addresses as tokenGate_localhost } from "@/utils/addresses/tokenGate_localhost";
 
 export interface Addresses {
   [key: string]: { [key: string]: string };
@@ -43,5 +46,10 @@ export const addresses: Addresses = {
     mumbai: svgHelper_mumbai.svgHelper,
     localhost: svgHelper_mainnet.svgHelperAddress, // deployed
     mainnet: svgHelper_mainnet.svgHelperAddress,
+  },
+  tokenGate: {
+    mumbai: tokenGate_mumbai.tokenGate,
+    localhost: tokenGate_mainnet.tokenGate, // deployed
+    mainnet: tokenGate_localhost.tokenGate,
   },
 };

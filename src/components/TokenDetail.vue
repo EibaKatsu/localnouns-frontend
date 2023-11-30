@@ -1,5 +1,5 @@
 <template>
-  <!-- For List thumbnail -->
+  <!-- For Token View -->
   <div v-if="size == 'L'">
     <div class="flex flex-col justify-center items-center">
       <div>
@@ -22,7 +22,7 @@
       </div>
     </div>
   </div>
-  <!-- For Token View -->
+  <!-- For List thumbnail -->
   <div v-if="size == 'S'">
     <div class="flex flex-col justify-center items-center">
       <svg v-html="token.svg" style="width: 80%; height: auto"></svg>
@@ -79,6 +79,13 @@
     </div>
     <p v-if="token.salePrice > 0" class="mb-2 font-londrina font-yusei text-xl">
       {{ token.salePrice }} ETH
+    </p>
+  </div>
+
+  <!-- For Token View -->
+  <div v-if="size == 'L'">
+    <p class="mb-2 font-londrina font-yusei text-xl">
+      {{ $t("tokenDetail.owner") }} : {{ token.holder }}
     </p>
   </div>
 </template>

@@ -271,6 +271,7 @@ export default {
         );
         const result = await tx.wait();
         console.log("putTradeLocalNoun:tx", result);
+        selectedPrefectures = [];
         isTradeBusy.value = false;
         informationMessage.value = "tokenManagement.finishSetTrade";
         displayInformationDialog.value = true;

@@ -1,3 +1,6 @@
+/*
+  npx ts-node -r tsconfig-paths/register server/script/TransferFromEventLogs.ts
+*/
 import { ALCHEMY_API_KEY, NETWORK } from "@/config/project";
 import {
   getProvider,
@@ -29,9 +32,9 @@ const main = async () => {
       // eventからto, tokenIdを取得
       const { to, tokenId } = event.args;
 
-      if(tokenId >= 5){
-        continue;
-      }
+      // if(tokenId < 267){
+      //   continue;
+      // }
 
       // token情報を取得ß
       const tokenInfo: TOKEN = await getTokenInfo(tokenId);

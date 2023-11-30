@@ -220,20 +220,20 @@ export default {
       }
 
       const contract = await getContract(props.network);
-      isSaleBusy.value = true;
+      isTradeBusy.value = true;
       try {
-        const txParams = { value: 0 };
+        const txParams = { value: ethers.parseEther("0.003") };
         const tx = await contract.executeTradeLocalNoun(
           selectedMyTokenId,
           props.token.tokenId,
           txParams,
         );
         await tx.wait();
-        isSaleBusy.value = false;
+        isTradeBusy.value = false;
         informationMessage.value = "TokenSaleOrTrade.finishTradeNoun";
         displayInformationDialog.value = true;
       } catch (e) {
-        isSaleBusy.value = false;
+        isTradeBusy.value = false;
         console.error(e);
       }
     };

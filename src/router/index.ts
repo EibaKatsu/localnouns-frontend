@@ -9,6 +9,10 @@ import Owner from "@/views/Owner.vue";
 // import ComingSoon from "@/views/ComingSoon.vue";
 import Shop from "@/views/Shop.vue";
 import About from "@/views/About.vue";
+import Tokushoho from "@/views/Tokushoho.vue";
+import Terms from "@/views/Terms.vue";
+import Explanation from "@/views/Explanation.vue";
+import Privcy from "@/views/Privacy.vue";
 import { addresses } from "@/utils/addresses";
 
 const network = "mumbai";
@@ -29,6 +33,7 @@ const routeChildren: Array<RouteRecordRaw> = [
       tokenAddress: addresses.localNounsToken[network],
       assetProvider: "localProvider",
       minterAddress: addresses.localNounsMinter[network],
+      tokenGateAddress: addresses.tokenGate[network],
     },
   },
   {
@@ -37,7 +42,7 @@ const routeChildren: Array<RouteRecordRaw> = [
     props: {
       network: network,
       tokenAddress: addresses.localNounsToken[network],
-      test: true,
+      // test: true,
     },
   },
   {
@@ -46,7 +51,7 @@ const routeChildren: Array<RouteRecordRaw> = [
     props: {
       network: network,
       tokenAddress: addresses.localNounsToken[network],
-      test: true,
+      // test: true,
     },
   },
   {
@@ -57,17 +62,41 @@ const routeChildren: Array<RouteRecordRaw> = [
     path: "about",
     component: About,
   },
+  {
+    path: "tokushoho",
+    component: Tokushoho,
+  },
+  {
+    path: "terms",
+    component: Terms,
+  },
+  {
+    path: "explanation",
+    component: Explanation,
+  },
+  {
+    path: "privacy",
+    component: Privcy,
+  },
 ];
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/:lang(ja|en)",
     component: Layout,
+    props: {
+      network: network,
+      tokenAddress: addresses.localNounsToken[network],
+    },
     children: routeChildren,
   },
   {
     path: "",
     component: Layout,
+    props: {
+      network: network,
+      tokenAddress: addresses.localNounsToken[network],
+    },
     children: routeChildren,
   },
   {

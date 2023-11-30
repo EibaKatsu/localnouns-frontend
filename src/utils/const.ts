@@ -12,19 +12,20 @@ interface Token {
 type Provider =
   | ethers.JsonRpcProvider
   | ethers.AlchemyProvider
-  | ethers.InfuraProvider;
+  | ethers.InfuraProvider
+  | ethers.BrowserProvider;
 type ProviderOrSigner = ethers.Provider | ethers.Signer | undefined;
 
 export const getAddresses = (network: string, contentAddress: string) => {
   const EtherscanBase = (() => {
     if (network == "rinkeby") {
-      return "https://rinkeby.etherscan.io/address";
+      return "https://rinkeby.etherscan.io";
     } else if (network == "goerli") {
-      return "https://goerli.etherscan.io/address";
+      return "https://goerli.etherscan.io";
     } else if (network == "mumbai") {
-      return "https://mumbai.polygonscan.com/address";
+      return "https://mumbai.polygonscan.com";
     }
-    return "https://etherscan.io/address";
+    return "https://etherscan.io";
   })();
   const OpenSeaBase = (() => {
     if (network == "rinkeby") {
@@ -36,7 +37,7 @@ export const getAddresses = (network: string, contentAddress: string) => {
     }
     return "https://opensea.io/assets/ethereum";
   })();
-  const EtherscanToken = `${EtherscanBase}/${contentAddress}`;
+  const EtherscanToken = `${EtherscanBase}/address/${contentAddress}`;
   const OpenSeaPath = `${OpenSeaBase}/${contentAddress}`;
 
   return {
@@ -106,7 +107,7 @@ export const getSvgHelper = (network: string, provider: ProviderOrSigner) => {
   return svgHelper;
 };
 
-const getTokenGate = (address: string, provider: ProviderOrSigner) => {
+export const getTokenGate = (address: string, provider: ProviderOrSigner) => {
   const tokenGate = new ethers.Contract(address, ITokenGate.wabi.abi, provider);
   return tokenGate;
 };
@@ -138,19 +139,15 @@ export const getTokenContract = (
 };
 
 // Token Contract functions
-const getBalanceFromTokenContract = async (
-  tokenContract: ethers.Contract,
+const getBalanceFromTokenGate = async (
+  tokenGate: ethers.Contract,
   account: string,
 ) => {
-  const [balance] = await tokenContract.balanceOf(account);
+  if (!account) {
+    return 0;
+  }
+  const balance = await tokenGate.balanceOf(account);
   return balance;
-};
-const getMintPriceForFromTokenContract = async (
-  tokenContract: ethers.Contract,
-  account: string,
-) => {
-  const [value] = await tokenContract.mintPriceFor(account);
-  return value;
 };
 const getTotalSupplyFromTokenContract = async (
   tokenContract: ethers.Contract,
@@ -165,6 +162,30 @@ const getMintLimitFromTokenContract = async (
   const limit = await tokenContract.mintLimit();
   return Number(limit);
 };
+
+const getMintMaxFromMinterContract = async (
+  minterContract: ethers.Contract,
+) => {
+  const limit = await minterContract.mintMax();
+  return Number(limit);
+};
+const getPhaseFromMinterContract = async (minterContract: ethers.Contract) => {
+  const phase = await minterContract.phase();
+  return Number(phase);
+};
+const getMintPriceForSpecifiedFromMinterContract = async (
+  minterContract: ethers.Contract,
+) => {
+  const price = await minterContract.mintPriceForSpecified();
+  return BigInt(price);
+};
+const getMintPriceForNotSpecifiedFromMinterContract = async (
+  minterContract: ethers.Contract,
+) => {
+  const price = await minterContract.mintPriceForNotSpecified();
+  return BigInt(price);
+};
+
 const getDebugTokenURI = async (
   tokenContract: ethers.Contract,
   tokenId: number,
@@ -224,34 +245,56 @@ export const useFetchTokens = (
   };
 };
 
-export const useCheckTokenGate = (
-  tokenGateAddress: string,
-  tokenGated: boolean,
-  provider: Provider,
+export const useMintConditions = (
+  network: string,
   contractRO: ethers.Contract,
 ) => {
-  const totalBalance = ref<number>(0);
-  const balanceOf = ref<number>(0);
-  const mintPrice = ref<bigint>(BigInt(0));
+  const salePhase = ref<number>(0);
+  const mintLimit = ref<number>(0);
+  const mintPriceForSpecified = ref<bigint>(BigInt(0));
+  const mintPriceForNotSpecified = ref<bigint>(BigInt(0));
 
-  const checkTokenGate = async (account: string) => {
-    console.log("### calling totalBalanceOf");
-    if (tokenGated) {
-      const tokenGate = getTokenGate(tokenGateAddress, provider);
-      const [result] = await tokenGate.balanceOf(account);
-      totalBalance.value = result.toNumber();
-    }
-    balanceOf.value = await getBalanceFromTokenContract(contractRO, account);
-    mintPrice.value = await getMintPriceForFromTokenContract(
-      contractRO,
-      account,
+  const mintConditions = async () => {
+    salePhase.value = await getPhaseFromMinterContract(contractRO);
+    mintLimit.value = await getMintMaxFromMinterContract(contractRO);
+    mintPriceForSpecified.value =
+      await getMintPriceForSpecifiedFromMinterContract(contractRO);
+    mintPriceForNotSpecified.value =
+      await getMintPriceForNotSpecifiedFromMinterContract(contractRO);
+
+    console.log("salePhase/mintLimit", salePhase.value, mintLimit.value);
+    console.log(
+      "mintPrice",
+      mintPriceForSpecified.value,
+      mintPriceForNotSpecified.value,
     );
   };
   return {
-    totalBalance,
-    balanceOf,
-    mintPrice,
+    salePhase,
+    mintLimit,
+    mintPriceForSpecified,
+    mintPriceForNotSpecified,
+    mintConditions,
+  };
+};
 
+export const useCheckTokenGate = (tokenGate: ethers.Contract) => {
+  const balanceOf = ref<number>(0);
+
+  const checkTokenGate = async (account: string) => {
+    if (account) {
+      // tokenGateに存在しないアドレスが登録されている場合はExceptionになる(テスト用)
+      try {
+        balanceOf.value = await getBalanceFromTokenGate(tokenGate, account);
+      } catch (e) {
+        balanceOf.value = 0;
+      }
+    } else {
+      balanceOf.value = 0;
+    }
+  };
+  return {
+    balanceOf,
     checkTokenGate,
   };
 };
