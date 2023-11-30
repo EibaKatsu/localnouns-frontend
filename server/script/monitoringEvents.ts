@@ -11,7 +11,7 @@ import { ethers } from "ethers";
 import { writeTokenDataToFirestore, updateHolderOfTokenOnFirestore, updatePriceOfTokenOnFirestore, updateTradeOfTokenOnFirestore } from "./tokenOnFirestore";
 import { getTokenInfoAtMint } from "./tokenOnContract";
 import { TOKEN } from "@/firestore/const";
-import { EventQueue } from "@/utils/EventQueue";
+import { EventQueue } from "@/utils/eventQueue";
 
 const provider = getProvider(NETWORK, ALCHEMY_API_KEY);
 const tokenContract = getLocalNounsTokenContract(
