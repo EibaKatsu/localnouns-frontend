@@ -11,25 +11,38 @@
     <span v-else>
       <span v-if="hasMetaMask">
         <span v-if="account">
-          <button
-            type="button"
-            v-if="isBusy"
-            class="inline-block rounded px-6 py-2.5 leading-tight text-gray-500 shadow-md"
-            disabled
-          >
-            <img
-              class="absolute h-3 w-8 animate-spin"
-              src="@/assets/red160px.png"
-            />
-            <span class="ml-10">{{ $t("message.processing") }}</span>
-          </button>
-          <button
-            v-else
-            class="inline-block rounded bg-green-600 px-6 py-2.5 leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg"
-          >
-            <!-- {{ $t("menu.connected") }} -->
-            {{ account.substring(0, 6) }}...
-          </button>
+          <span v-if="isBusy">
+            <button
+              type="button"
+              class="inline-block rounded px-6 py-2.5 leading-tight text-gray-500 shadow-md"
+              disabled
+            >
+              <img
+                class="absolute h-3 w-8 animate-spin"
+                src="@/assets/red160px.png"
+              />
+              <span class="ml-10">{{ $t("message.processing") }}</span>
+            </button>
+          </span>
+          <span v-else>
+            <span v-if="chainId == networkChainId">
+              <button
+                class="inline-block rounded bg-green-600 px-6 py-2.5 leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg"
+              >
+                <!-- {{ $t("menu.connected") }} -->
+                {{ account.substring(0, 6) }}...
+              </button>
+            </span>
+            <span v-else>
+              <button
+                @click="switchNetworkChain"
+                class="inline-block rounded bg-green-600 px-6 py-2.5 leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg"
+              >
+                <!-- {{ $t("menu.connected") }} -->
+                switch to {{ network }}
+              </button>
+            </span>
+          </span>
         </span>
         <span v-else>
           <button
@@ -60,6 +73,9 @@
         >
           {{ $t("menu.nometamask") }}
         </button>
+        <div>
+          {{ $t("menu.useMetamask") }}
+        </div>
       </span>
     </span>
   </span>
@@ -68,18 +84,27 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from "vue";
 import { useStore } from "vuex";
-import { requestAccount } from "@/utils/MetaMask";
+import { requestAccount, ChainIdMap, switchNetwork } from "@/utils/MetaMask";
 import { auth } from "@/utils/firebase";
 import { signInWithCustomToken } from "firebase/auth";
 import { generateNonce, verifyNonce, deleteNonce } from "@/utils/functions";
 //import Web3 from "web3";
 
 export default defineComponent({
-  setup() {
+  props: {
+    network: {
+      type: String,
+      required: true,
+    },
+  },
+  setup(props) {
     const store = useStore();
     const account = computed(() => store.state.account);
+    const chainId = computed(() => store.state.chainId);
     const isSignedIn = computed(() => store.getters.isSignedIn);
     const isBusy = ref("");
+    const networkChainId = ChainIdMap[props.network];
+
     const connect = async () => {
       isBusy.value = "Connecting Metamask...";
       try {
@@ -91,6 +116,18 @@ export default defineComponent({
       console.log("*****", store.state.account);
       // signIn();
     };
+
+    const switchNetworkChain = async () => {
+      isBusy.value = "Switching to " + props.network + "...";
+      try {
+        await switchNetwork(networkChainId);
+      } catch (e) {
+        console.log(e);
+      }
+      isBusy.value = "";
+      console.log("*****", props.network);
+    };
+
     const signIn = async () => {
       const ethereum = store.state.ethereum;
       // Step 1: We get a nonce from the server
@@ -141,9 +178,12 @@ export default defineComponent({
     return {
       hasMetaMask,
       account,
+      chainId,
+      networkChainId,
       isSignedIn,
       isBusy,
       connect,
+      switchNetworkChain,
       signIn,
       signOut,
     };

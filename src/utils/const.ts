@@ -206,33 +206,37 @@ export const useFetchTokens = (
   const tokens = ref<Token[]>([]);
 
   const fetchTokens = async () => {
-    const svgHelper = getSvgHelper(network, provider);
-    totalSupply.value = await getTotalSupplyFromTokenContract(contractRO);
-    mintLimit.value = await getMintLimitFromTokenContract(contractRO);
+    try {
+      const svgHelper = getSvgHelper(network, provider);
+      totalSupply.value = await getTotalSupplyFromTokenContract(contractRO);
+      mintLimit.value = await getMintLimitFromTokenContract(contractRO);
 
-    const providerAddress = addresses[assetProvider || "dotNouns"][network];
+      const providerAddress = addresses[assetProvider || "dotNouns"][network];
 
-    console.log("totalSupply/mintLimit", totalSupply.value, mintLimit.value);
-    if (totalSupply.value < mintLimit.value) {
-      const [svgPart, tag, gas] = await svgHelper.generateSVGPart(
-        providerAddress,
-        totalSupply.value,
-      );
-      console.log("gas:", gas);
-      nextImage.value = svgImageFromSvgPart(svgPart, tag, "");
-    } else {
-      nextImage.value = null;
-    }
-    tokens.value = [];
-    for (
-      let tokenId = Math.max(0, totalSupply.value - 4);
-      tokenId < totalSupply.value;
-      tokenId++
-    ) {
-      const { tokenURI, gas } = await getDebugTokenURI(contractRO, tokenId);
-      console.log("gas", tokenId, gas);
-      const { json } = decodeTokenData(tokenURI);
-      tokens.value.push({ tokenId, image: json.image });
+      console.log("totalSupply/mintLimit", totalSupply.value, mintLimit.value);
+      if (totalSupply.value < mintLimit.value) {
+        const [svgPart, tag, gas] = await svgHelper.generateSVGPart(
+          providerAddress,
+          totalSupply.value,
+        );
+        console.log("gas:", gas);
+        nextImage.value = svgImageFromSvgPart(svgPart, tag, "");
+      } else {
+        nextImage.value = null;
+      }
+      tokens.value = [];
+      for (
+        let tokenId = Math.max(0, totalSupply.value - 4);
+        tokenId < totalSupply.value;
+        tokenId++
+      ) {
+        const { tokenURI, gas } = await getDebugTokenURI(contractRO, tokenId);
+        console.log("gas", tokenId, gas);
+        const { json } = decodeTokenData(tokenURI);
+        tokens.value.push({ tokenId, image: json.image });
+      }
+    } catch (e) {
+      console.error("fetchTokens", e);
     }
   };
   return {
@@ -249,25 +253,29 @@ export const useMintConditions = (
   network: string,
   contractRO: ethers.Contract,
 ) => {
-  const salePhase = ref<number>(0);
+  const salePhase = ref<number>(-1);
   const mintLimit = ref<number>(0);
   const mintPriceForSpecified = ref<bigint>(BigInt(0));
   const mintPriceForNotSpecified = ref<bigint>(BigInt(0));
 
   const mintConditions = async () => {
-    salePhase.value = await getPhaseFromMinterContract(contractRO);
-    mintLimit.value = await getMintMaxFromMinterContract(contractRO);
-    mintPriceForSpecified.value =
-      await getMintPriceForSpecifiedFromMinterContract(contractRO);
-    mintPriceForNotSpecified.value =
-      await getMintPriceForNotSpecifiedFromMinterContract(contractRO);
+    try {
+      salePhase.value = await getPhaseFromMinterContract(contractRO);
+      mintLimit.value = await getMintMaxFromMinterContract(contractRO);
+      mintPriceForSpecified.value =
+        await getMintPriceForSpecifiedFromMinterContract(contractRO);
+      mintPriceForNotSpecified.value =
+        await getMintPriceForNotSpecifiedFromMinterContract(contractRO);
 
-    console.log("salePhase/mintLimit", salePhase.value, mintLimit.value);
-    console.log(
-      "mintPrice",
-      mintPriceForSpecified.value,
-      mintPriceForNotSpecified.value,
-    );
+      console.log("salePhase/mintLimit", salePhase.value, mintLimit.value);
+      console.log(
+        "mintPrice",
+        mintPriceForSpecified.value,
+        mintPriceForNotSpecified.value,
+      );
+    } catch (e) {
+      console.error("mintConditions", e);
+    }
   };
   return {
     salePhase,

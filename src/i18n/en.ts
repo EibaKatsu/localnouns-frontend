@@ -21,8 +21,11 @@ const lang = {
     connected: "Sign In",
     signedIn: "Sign Out",
     nometamask: "No Metamask",
+    useMetamask:
+      "If you are on a mobile phone, please access it through the MetaMask app browser",
     switch: "Switch",
     form: "Submission Form",
+    switchNetwork: "Change the network to which the wallet is connected",
   },
   mint: {
     saleLock: "Mint Sale is not available",
@@ -47,6 +50,8 @@ const lang = {
   },
   errorDialog: {
     message: "Error has occurred. Please wait a moment and try again.",
+    message2:
+      "If you see“missing revert data”, your ETH balance may be insufficient.",
   },
   list: {
     description: "You can parchace Local Nouns here.",
@@ -109,6 +114,7 @@ const lang = {
     finishBuyNoun: "Successfully purchased Noun!",
     selectNounForTrade: "Select a noun for trade",
     finishTradeNoun: "Successfully traded Noun!",
+    notHasTradableNouns: "Not have any Nouns available for exchange.",
   },
   validator: {
     validNumber: "Enter a number greater than 0",

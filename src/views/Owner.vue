@@ -37,6 +37,7 @@
       <TokenManagement
         v-if="selectedToken"
         :network="network"
+        :tokenAddress="tokenAddress"
         :isOpen="isManagementModalOpen"
         :token="selectedToken"
         @close="closeTokenModal"
@@ -118,8 +119,8 @@ export default defineComponent({
         if (accessoryName) {
           token.accessory = accessoryName.name;
           token.accessoryDescription = accessoryName.description;
-          if(accessoryName.author){
-            token.accessoryDescription += ' (' + accessoryName.author + ')';
+          if (accessoryName.author) {
+            token.accessoryDescription += " (" + accessoryName.author + ")";
           }
         }
 
@@ -131,8 +132,8 @@ export default defineComponent({
         if (headName) {
           token.head = headName.name;
           token.headDescription = headName.description;
-          if(headName.author){
-            token.headDescription += ' (' + headName.author + ')';
+          if (headName.author) {
+            token.headDescription += " (" + headName.author + ")";
           }
         }
       }

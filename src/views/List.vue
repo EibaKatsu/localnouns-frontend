@@ -6,14 +6,39 @@
   </div>
 
   <div
-    class="grid w-full grid-cols-3 place-content-center items-center items-start gap-2 sm:grid-cols-4"
+    class="grid w-full grid-cols-1 place-content-center items-center items-start gap-2 sm:grid-cols-4 ml-4"
   >
+    <!-- 都道府県-->
     <span class="ml-2 font-londrina font-yusei text-xl">
-      <label>
+      <label class="flex items-center">
         <input
-          type="checkbox"
-          v-model="filterOnSale"
-          @change="filterTokenByCriteria"
+          type="radio"
+          name="filterType"
+          value="prefecture"
+          v-model="filterType"
+          @change="getTokenList"
+        />
+        <div>
+          <Prefectures
+            class="mx-2 my-1"
+            :notIncludeNotSpecified="true"
+            :initialPrefecture="initialPrefecture"
+            v-model="selectedPrefecture"
+            @change="getTokenList"
+          />
+        </div>
+      </label>
+    </span>
+
+    <!-- 販売中 -->
+    <span class="ml-2 font-londrina font-yusei text-xl">
+      <label class="flex items-center">
+        <input
+          type="radio"
+          name="filterType"
+          value="onSale"
+          v-model="filterType"
+          @change="getTokenList"
         />
         <button
           class="inline-block rounded bg-red-500 w-20 px-1 py-2.5 leading-tight text-white shadow-md transition duration-150 mx-2 my-2"
@@ -23,12 +48,16 @@
         </button>
       </label>
     </span>
+
+    <!-- トレード -->
     <span class="ml-2 font-londrina font-yusei text-xl">
-      <label>
+      <label class="flex items-center">
         <input
-          type="checkbox"
-          v-model="filterOnTrade"
-          @change="filterTokenByCriteria"
+          type="radio"
+          name="filterType"
+          value="onTrade"
+          v-model="filterType"
+          @change="getTokenList"
         />
         <button
           class="inline-block rounded bg-blue-500 w-20 px-1 py-2.5 leading-tight text-white shadow-md transition duration-150 mx-2 my-2"
@@ -38,51 +67,17 @@
         </button>
       </label>
     </span>
-    <span v-if="account" class="ml-2 font-londrina font-yusei text-xl">
-      <label>
-        <input
-          type="checkbox"
-          v-model="filterOnManage"
+
+    <!-- ソート順 -->
+    <span class="ml-2 font-londrina font-yusei text-xl">
+      <label class="flex items-center">
+        <ListSortOrder
+          class="mx-2 my-1"
+          v-model="selectedSortOrder"
           @change="filterTokenByCriteria"
         />
-        <button
-          class="inline-block rounded bg-green-500 w-20 px-1 py-2.5 leading-tight text-white shadow-md transition duration-150 mx-2 my-2"
-          disabled
-        >
-          {{ $t("list.manage") }}
-        </button>
       </label>
     </span>
-    <span v-else class="ml-2 font-londrina font-yusei text-xl">
-      <label>
-        <input
-          disabled
-          type="checkbox"
-          v-model="filterOnManage"
-          @change="filterTokenByCriteria"
-        />
-        <button
-          class="inline-block rounded bg-gray-500 w-20 px-1 py-2.5 leading-tight text-white shadow-md transition duration-150 mx-2 my-2"
-          disabled
-        >
-          {{ $t("list.manage") }}
-        </button>
-      </label>
-    </span>
-    <div>
-      <Prefectures
-        class="mx-2 my-1"
-        :notIncludeNotSpecified="true"
-        :initialPrefecture="initialPrefecture"
-        v-model="selectedPrefecture"
-        @change="getTokenList"
-      />
-      <ListSortOrder
-        class="mx-2 my-1"
-        v-model="selectedSortOrder"
-        @change="filterTokenByCriteria"
-      />
-    </div>
   </div>
   <div
     class="grid w-screen grid-cols-2 place-content-center items-center gap-2 sm:grid-cols-5"
@@ -102,7 +97,6 @@
       >
         <button
           class="inline-block rounded bg-green-500 w-20 px-1 py-2.5 leading-tight text-white shadow-md transition duration-150 my-2"
-          disabled
         >
           {{ $t("list.manage") }}
         </button>
@@ -112,6 +106,7 @@
     <TokenManagement
       v-if="selectedToken"
       :network="network"
+      :tokenAddress="tokenAddress"
       :isOpen="isManagementModalOpen"
       :token="selectedToken"
       @close="closeTokenModal"
@@ -120,6 +115,7 @@
     <TokenSaleOrTrade
       v-if="selectedToken"
       :network="network"
+      :tokenAddress="tokenAddress"
       :isOpen="isSaleOrTradeModalOpen"
       :token="selectedToken"
       :myTokens="myTokens"
@@ -218,9 +214,7 @@ export default defineComponent({
     const initialPrefecture = new Date().getSeconds() % 47;
     const selectedPrefecture = ref(initialPrefecture + 1);
     const selectedSortOrder = ref("newer");
-    const filterOnSale = ref(false);
-    const filterOnTrade = ref(false);
-    const filterOnManage = ref(false);
+    const filterType = ref("prefecture");
     const isManagementModalOpen = ref(false);
     const isSaleOrTradeModalOpen = ref(false);
 
@@ -235,8 +229,8 @@ export default defineComponent({
         if (accessoryName) {
           token.accessory = accessoryName.name;
           token.accessoryDescription = accessoryName.description;
-          if(accessoryName.author){
-            token.accessoryDescription += ' (' + accessoryName.author + ')';
+          if (accessoryName.author) {
+            token.accessoryDescription += " (" + accessoryName.author + ")";
           }
         }
 
@@ -248,8 +242,8 @@ export default defineComponent({
         if (headName) {
           token.head = headName.name;
           token.headDescription = headName.description;
-          if(headName.author){
-            token.headDescription += ' (' + headName.author + ')';
+          if (headName.author) {
+            token.headDescription += " (" + headName.author + ")";
           }
         }
       }
@@ -257,21 +251,6 @@ export default defineComponent({
 
     const filterTokenByCriteria = () => {
       tokensForDisplay.value = tokens.value;
-      if (filterOnSale.value) {
-        tokensForDisplay.value = tokensForDisplay.value.filter(
-          (token: TOKEN) => token.salePrice > 0,
-        );
-      }
-      if (filterOnTrade.value) {
-        tokensForDisplay.value = tokensForDisplay.value.filter(
-          (token: TOKEN) => token.isOnTrade == true,
-        );
-      }
-      if (filterOnManage.value && account) {
-        tokensForDisplay.value = tokensForDisplay.value.filter(
-          (token: TOKEN) => token.holder == account.value,
-        );
-      }
 
       switch (selectedSortOrder.value) {
         case "newer":
@@ -302,12 +281,18 @@ export default defineComponent({
           db,
           tokenCollectionPath + "/tokens",
         ) as Query<TOKEN>;
-        if (selectedPrefecture.value != 0) {
+
+        if (filterType.value == "onSale") {
+          tokenQuery = query(tokenQuery, where("salePrice", ">", 0));
+        } else if (filterType.value == "onTrade") {
+          tokenQuery = query(tokenQuery, where("isOnTrade", "==", true));
+        } else {
           tokenQuery = query(
             tokenQuery,
             where("prefecture", "==", prefectureList[selectedPrefecture.value]),
           );
         }
+
         try {
           const results = await getDocs(tokenQuery);
           tokens.value = results.docs.map((doc) => {
@@ -354,9 +339,7 @@ export default defineComponent({
       selectedPrefecture,
       initialPrefecture,
       selectedSortOrder,
-      filterOnSale,
-      filterOnTrade,
-      filterOnManage,
+      filterType,
       filterTokenByCriteria,
       isManagementModalOpen,
       isSaleOrTradeModalOpen,

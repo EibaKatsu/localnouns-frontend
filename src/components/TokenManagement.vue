@@ -4,7 +4,7 @@
     class="fixed inset-0 z-50 overflow-y bg-gray-500 bg-opacity-75 flex justify-center items-center"
   >
     <div
-      class="relative p-6 bg-white w-3/4 h-4/5 overflow-y-auto flex flex-col justify-between items-center"
+      class="relative p-6 bg-white w-5/6 h-4/5 overflow-y-auto flex flex-col justify-between items-center font-londrina font-yusei"
     >
       <span class="absolute top-4 right-4 cursor-pointer">
         <button
@@ -15,25 +15,38 @@
         </button>
       </span>
 
-      <TokenDetail :token="token" size="L" />
+      <TokenDetail
+        :token="token"
+        :tokenAddress="tokenAddress"
+        :network="network"
+        size="L"
+      />
       <hr class="border-t border-gray-600 my-4 w-full" />
 
-      <p class="mb-2 font-londrina font-yusei text-3xl">
+      <p class="mb-2 text-3xl">
         {{ $t("tokenManagement.sale") }}
       </p>
-      <p class="mb-2 font-londrina font-yusei text-l">
+      <p class="mb-2 text-l">
         {{ $t("tokenManagement.saleDescription") }}
       </p>
 
       <div class="mt-4 flex flex-col items-center">
-        <label for="salePrice" class="mb-2 font-londrina font-yusei text-l">
+        <label for="salePrice" class="mb-2 text-l">
           {{ $t("tokenManagement.setSalePrice") }}
         </label>
+        <!-- 完了時のダイアログ -->
         <InformationDialog
           :isOpen="displayInformationDialog"
           :message="informationMessage"
           @close="closeModal(true)"
         />
+        <!-- エラー時のダイアログ -->
+        <ErrorDialog
+          :isOpen="displayErrorDialog"
+          :description="errorDescription"
+          @close="closeModal(true)"
+        />
+
         <div v-if="!isSaleBusy">
           <div class="flex items-center">
             <input
@@ -161,6 +174,7 @@ import { ChainIdMap } from "@/utils/MetaMask";
 import TokenDetail from "@/components/TokenDetail.vue";
 import PrefecturesCheckbox from "@/components/PrefecturesCheckbox.vue";
 import InformationDialog from "@/components/InformationDialog.vue";
+import ErrorDialog from "@/components/ErrorDialog.vue";
 import { isValidNumber } from "@/utils/validator";
 import { addresses } from "@/utils/addresses";
 
@@ -169,6 +183,7 @@ export default {
     TokenDetail,
     PrefecturesCheckbox,
     InformationDialog,
+    ErrorDialog,
   },
   props: {
     network: {
@@ -182,6 +197,10 @@ export default {
     token: {
       type: Object,
       required: true,
+    },
+    tokenAddress: {
+      type: String,
+      required: false,
     },
   },
   setup(props, context) {
@@ -197,6 +216,8 @@ export default {
     const isTradeBusy = ref(false);
     const displayInformationDialog = ref(false);
     const informationMessage = ref("");
+    const displayErrorDialog = ref(false);
+    const errorDescription = ref("");
 
     const setSalePrice = async () => {
       // 入力チェック
@@ -223,8 +244,28 @@ export default {
         informationMessage.value = "tokenManagement.finishSetSalePrice";
         displayInformationDialog.value = true;
       } catch (e) {
-        isSaleBusy.value = false;
         console.error(e);
+
+        if (e instanceof Error) {
+          errorDescription.value = "setSalePrice:" + e.message;
+        } else {
+          errorDescription.value = "setSalePrice:" + String(e);
+        }
+        const indexComma = errorDescription.value.indexOf("(");
+        errorDescription.value = errorDescription.value.substring(
+          0,
+          indexComma,
+        );
+        if (errorDescription.value.indexOf("user rejected action") < 0) {
+          displayErrorDialog.value = true;
+        } else {
+          isSaleBusy.value = false;
+        }
+        console.log(
+          "displayErrorDialog.value",
+          displayErrorDialog.value,
+          errorDescription.value,
+        );
       }
     };
 
@@ -240,8 +281,27 @@ export default {
         informationMessage.value = "tokenManagement.finishRemoveSalePrice";
         displayInformationDialog.value = true;
       } catch (e) {
-        isSaleBusy.value = false;
         console.error(e);
+        if (e instanceof Error) {
+          errorDescription.value = "removeSalePrice:" + e.message;
+        } else {
+          errorDescription.value = "removeSalePrice:" + String(e);
+        }
+        const indexComma = errorDescription.value.indexOf("(");
+        errorDescription.value = errorDescription.value.substring(
+          0,
+          indexComma,
+        );
+        if (errorDescription.value.indexOf("user rejected action") < 0) {
+          displayErrorDialog.value = true;
+        } else {
+          isSaleBusy.value = false;
+        }
+        console.log(
+          "displayErrorDialog.value",
+          displayErrorDialog.value,
+          errorDescription.value,
+        );
       }
     };
 
@@ -276,8 +336,28 @@ export default {
         informationMessage.value = "tokenManagement.finishSetTrade";
         displayInformationDialog.value = true;
       } catch (e) {
-        isTradeBusy.value = false;
         console.error(e);
+
+        if (e instanceof Error) {
+          errorDescription.value = "setTrade:" + e.message;
+        } else {
+          errorDescription.value = "setTrade:" + String(e);
+        }
+        const indexComma = errorDescription.value.indexOf("(");
+        errorDescription.value = errorDescription.value.substring(
+          0,
+          indexComma,
+        );
+        if (errorDescription.value.indexOf("user rejected action") < 0) {
+          displayErrorDialog.value = true;
+        } else {
+          isTradeBusy.value = false;
+        }
+        console.log(
+          "displayErrorDialog.value",
+          displayErrorDialog.value,
+          errorDescription.value,
+        );
       }
     };
 
@@ -297,8 +377,28 @@ export default {
         informationMessage.value = "tokenManagement.finishStopTrade";
         displayInformationDialog.value = true;
       } catch (e) {
-        isTradeBusy.value = false;
         console.error(e);
+
+        if (e instanceof Error) {
+          errorDescription.value = "setTrade:" + e.message;
+        } else {
+          errorDescription.value = "setTrade:" + String(e);
+        }
+        const indexComma = errorDescription.value.indexOf("(");
+        errorDescription.value = errorDescription.value.substring(
+          0,
+          indexComma,
+        );
+        if (errorDescription.value.indexOf("user rejected action") < 0) {
+          displayErrorDialog.value = true;
+        } else {
+          isTradeBusy.value = false;
+        }
+        console.log(
+          "displayErrorDialog.value",
+          displayErrorDialog.value,
+          errorDescription.value,
+        );
       }
     };
 
@@ -338,6 +438,8 @@ export default {
       isTradeBusy,
       displayInformationDialog,
       informationMessage,
+      displayErrorDialog,
+      errorDescription,
     };
   },
 };

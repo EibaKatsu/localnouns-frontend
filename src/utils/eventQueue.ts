@@ -9,22 +9,24 @@ type EventHandler = (event: TransferEvent) => Promise<void>;
 
 export class EventQueue {
   private queue: { event: TransferEvent; handler: EventHandler }[];
-  private processing: boolean;
+  private processing: number;
+  private processingLimit:number;
 
-  constructor() {
+  constructor(_processingLimit:number) {
     this.queue = [];
-    this.processing = false;
+    this.processing = 0;
+    this.processingLimit = _processingLimit;
   }
 
   private async processNext(): Promise<void> {
-    if (this.processing || this.queue.length === 0) {
+    if (this.processing > this.processingLimit || this.queue.length === 0) {
       return;
     }
 
-    this.processing = true;
+    this.processing++;
     const { event, handler } = this.queue.shift()!;
     await handler(event);
-    this.processing = false;
+    this.processing--;
 
     this.processNext();
   }

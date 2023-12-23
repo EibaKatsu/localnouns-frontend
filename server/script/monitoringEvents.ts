@@ -19,7 +19,7 @@ const tokenContract = getLocalNounsTokenContract(
   provider,
 );
 
-const eventQueue = new EventQueue();
+const eventQueue = new EventQueue(3);
 // Transferイベントの監視
 tokenContract.on("Transfer", async (from, to, tokenId, event) => {
   // 同時実行スレッドの数を制限するためキューイングして実行する

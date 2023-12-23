@@ -45,6 +45,10 @@ Your app is ready to be deployed!
 ### `firebase deploy`
 
 Deploys the app to the Firebase cloud. You need to run "yarn run build" before the deployment.
+If you want to deploy restricted service, use `firebase deploy --only hosting,firestore`
+
+### `firebase hosting:channel:deploy preview`
+If you want others to view changes to your web app before going live, you can use preview channels.
 
 ### `yarn run format`
 

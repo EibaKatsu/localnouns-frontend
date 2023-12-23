@@ -365,7 +365,7 @@ export default defineComponent({
           props.network,
           props.minterAddress,
         );
-        hashLink.value = EtherscanBase + '/tx/' + tx.hash;
+        hashLink.value = EtherscanBase + "/tx/" + tx.hash;
 
         const result = await tx.wait();
 

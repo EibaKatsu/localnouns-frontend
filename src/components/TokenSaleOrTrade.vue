@@ -4,45 +4,48 @@
     class="fixed inset-0 z-50 overflow-y bg-gray-500 bg-opacity-75 flex justify-center items-center"
   >
     <div
-      class="relative p-6 bg-white w-3/4 h-4/5 overflow-y-auto flex flex-col justify-between items-center"
+      class="relative p-6 bg-white w-5/6 h-4/5 overflow-y-auto flex flex-col justify-between items-center font-londrina font-yusei"
     >
-      <span class="absolute top-4 right-4 cursor-pointer">
+      <!-- <span class="absolute top-4 right-4 cursor-pointer">
         <button
           @click="closeModal(false)"
           class="mt-4 inline-block rounded bg-green-500 px-6 py-2.5 leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg"
         >
           {{ $t("tokenManagement.close") }}
         </button>
-      </span>
+      </span> -->
 
-      <TokenDetail :token="token" size="L" />
-      <hr class="border-t border-gray-600 my-4 w-full" />
+      <TokenDetail
+        :token="token"
+        :tokenAddress="tokenAddress"
+        :network="network"
+        size="L"
+      />
 
-      <p class="mb-2 font-londrina font-yusei text-3xl">
-        {{ $t("TokenSaleOrTrade.sale") }}
-      </p>
-      <p class="mb-2 font-londrina font-yusei text-l">
-        {{ $t("TokenSaleOrTrade.saleDescription") }}
-      </p>
+      <div
+        v-if="token.salePrice > 0 && account"
+        class="mt-4 flex flex-col items-center"
+      >
+        <hr class="border-t border-gray-600 my-4 w-full" />
+        <p class="mb-2 text-3xl">
+          {{ $t("TokenSaleOrTrade.sale") }}
+        </p>
+        <p class="mb-2 font-londrina font-yusei text-l">
+          {{ $t("TokenSaleOrTrade.saleDescription") }}
+        </p>
 
-      <div class="mt-4 flex flex-col items-center">
-        <InformationDialog
-          :isOpen="displayInformationDialog"
-          :message="informationMessage"
-          @close="closeModal(true)"
-        />
         <div v-if="!isSaleBusy">
           <div class="flex justify-center gap-2 w-full">
             <button
               v-if="token.salePrice > 0 && account"
               @click="buyNoun"
-              class="mt-4 inline-block rounded bg-red-500 px-8 py-4 font-londrina font-yusei text-3xl leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg"
+              class="mt-4 inline-block rounded bg-red-500 px-8 py-4 text-3xl leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg"
             >
               {{ $t("TokenSaleOrTrade.buy") }}
             </button>
             <button
               v-else
-              class="mt-4 inline-block rounded bg-gray-500 px-8 py-4 font-londrina font-yusei text-3xl leading-tight text-white shadow-md transition duration-150"
+              class="mt-4 inline-block rounded bg-gray-500 px-8 py-4 text-3xl leading-tight text-white shadow-md transition duration-150"
               disabled
             >
               {{ $t("TokenSaleOrTrade.buy") }}
@@ -64,15 +67,15 @@
         </button>
       </div>
 
-      <hr class="border-t border-gray-600 my-4 w-full" />
+      <div v-if="token.isOnTrade && account">
+        <hr class="border-t border-gray-600 my-4 w-full" />
 
-      <p class="mb-2 font-londrina font-yusei text-3xl">
-        {{ $t("TokenSaleOrTrade.trade") }}
-      </p>
-      <p class="mb-2 font-londrina font-yusei text-l">
-        {{ $t("TokenSaleOrTrade.tradeDescription") }}
-      </p>
-      <div>
+        <p class="mb-2 text-3xl">
+          {{ $t("TokenSaleOrTrade.trade") }}
+        </p>
+        <p class="mb-2 text-l">
+          {{ $t("TokenSaleOrTrade.tradeDescription") }}
+        </p>
         <div class="flex justify-center w-full mt-4">
           <div class="flex flex-wrap">
             <div>{{ $t("TokenSaleOrTrade.tradeForPrefecture") }} :</div>
@@ -81,14 +84,13 @@
               :key="index"
               class="flex items-center mr-4 mb-2"
             >
-              <label class="ml-2 font-londrina font-yusei text-l">{{
+              <label class="ml-2 text-l">{{
                 $t("prefecture." + option)
               }}</label>
             </div>
           </div>
         </div>
         <MyNounsRadioButton
-          v-if="token.isOnTrade && account"
           :myTokens="myTokens"
           :tradeForPrefectures="tradeForPrefectures"
           @updateValues="handleUpdateMyTokens"
@@ -99,13 +101,13 @@
             <button
               v-if="token.isOnTrade && account"
               @click="tradeNoun"
-              class="mt-4 inline-block rounded bg-blue-500 px-8 py-4 font-londrina font-yusei text-3xl leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-red-blue hover:shadow-lg focus:bg-red-blue focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-blue active:shadow-lg"
+              class="mt-4 inline-block rounded bg-blue-500 px-8 py-4 text-3xl leading-tight text-white shadow-md transition duration-150 ease-in-out hover:bg-red-blue hover:shadow-lg focus:bg-red-blue focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-blue active:shadow-lg"
             >
               {{ $t("TokenSaleOrTrade.trade") }}
             </button>
             <button
               v-else
-              class="mt-4 inline-block rounded bg-gray-500 px-8 py-4 font-londrina font-yusei text-3xl leading-tight text-white shadow-md transition duration-150"
+              class="mt-4 inline-block rounded bg-gray-500 px-8 py-4 text-3xl leading-tight text-white shadow-md transition duration-150"
               disabled
             >
               {{ $t("TokenSaleOrTrade.trade") }}
@@ -127,6 +129,19 @@
         </button>
       </div>
 
+      <InformationDialog
+        :isOpen="displayInformationDialog"
+        :message="informationMessage"
+        @close="closeModal(true)"
+      />
+
+      <!-- エラー時のダイアログ -->
+      <ErrorDialog
+        :isOpen="displayErrorDialog"
+        :description="errorDescription"
+        @close="closeModal(true)"
+      />
+
       <hr class="border-t border-gray-600 my-4 w-full" />
       <button
         @click="closeModal(false)"
@@ -147,6 +162,7 @@ import { getLocalNounsTokenContract } from "@/utils/const";
 import { ChainIdMap } from "@/utils/MetaMask";
 import TokenDetail from "@/components/TokenDetail.vue";
 import InformationDialog from "@/components/InformationDialog.vue";
+import ErrorDialog from "@/components/ErrorDialog.vue";
 import MyNounsRadioButton from "@/components/MyNounsRadioButton.vue";
 import { prefectureList } from "@/i18n/prefectures";
 import { addresses } from "@/utils/addresses";
@@ -155,6 +171,7 @@ export default {
   components: {
     TokenDetail,
     InformationDialog,
+    ErrorDialog,
     MyNounsRadioButton,
   },
   props: {
@@ -174,6 +191,10 @@ export default {
       type: Array,
       required: true,
     },
+    tokenAddress: {
+      type: String,
+      required: false,
+    },
   },
   setup(props, context) {
     const store = useStore();
@@ -189,6 +210,8 @@ export default {
     const isTradeBusy = ref(false);
     const displayInformationDialog = ref(false);
     const informationMessage = ref("");
+    const displayErrorDialog = ref(false);
+    const errorDescription = ref("");
 
     const buyNoun = async () => {
       const contract = await getContract(props.network);
@@ -208,8 +231,28 @@ export default {
         informationMessage.value = "TokenSaleOrTrade.finishBuyNoun";
         displayInformationDialog.value = true;
       } catch (e) {
-        isSaleBusy.value = false;
         console.error(e);
+
+        if (e instanceof Error) {
+          errorDescription.value = "buyNoun:" + e.message;
+        } else {
+          errorDescription.value = "buyNoun:" + String(e);
+        }
+        const indexComma = errorDescription.value.indexOf("(");
+        errorDescription.value = errorDescription.value.substring(
+          0,
+          indexComma,
+        );
+        if (errorDescription.value.indexOf("user rejected action") < 0) {
+          displayErrorDialog.value = true;
+        } else {
+          isSaleBusy.value = false;
+        }
+        console.log(
+          "displayErrorDialog.value",
+          displayErrorDialog.value,
+          errorDescription.value,
+        );
       }
     };
 
@@ -233,8 +276,27 @@ export default {
         informationMessage.value = "TokenSaleOrTrade.finishTradeNoun";
         displayInformationDialog.value = true;
       } catch (e) {
-        isTradeBusy.value = false;
         console.error(e);
+        if (e instanceof Error) {
+          errorDescription.value = "tradeNoun:" + e.message;
+        } else {
+          errorDescription.value = "tradeNoun:" + String(e);
+        }
+        const indexComma = errorDescription.value.indexOf("(");
+        errorDescription.value = errorDescription.value.substring(
+          0,
+          indexComma,
+        );
+        if (errorDescription.value.indexOf("user rejected action") < 0) {
+          displayErrorDialog.value = true;
+        } else {
+          isTradeBusy.value = false;
+        }
+        console.log(
+          "displayErrorDialog.value",
+          displayErrorDialog.value,
+          errorDescription.value,
+        );
       }
     };
 
@@ -253,6 +315,7 @@ export default {
       isSaleBusy.value = false;
       isTradeBusy.value = false;
       displayInformationDialog.value = false;
+      displayErrorDialog.value = false;
       context.emit("close", reload);
     };
 
@@ -276,6 +339,8 @@ export default {
       isTradeBusy,
       displayInformationDialog,
       informationMessage,
+      displayErrorDialog,
+      errorDescription,
       buyNoun,
       tradeNoun,
     };

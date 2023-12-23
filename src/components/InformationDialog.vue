@@ -4,9 +4,9 @@
     class="fixed inset-0 z-50 overflow-auto bg-gray-500 bg-opacity-75 flex justify-center items-center"
   >
     <div
-      class="relative p-6 bg-white w-3/4 flex flex-col items-center justify-center"
+      class="relative p-6 bg-white w-3/4 flex flex-col items-center justify-center font-londrina font-yusei"
     >
-      <p class="mt-10 mb-2 font-londrina font-yusei text-2xl">
+      <p class="mt-10 mb-2 text-2xl">
         {{ $t(message) }}
       </p>
       <span class="absolute top-4 right-4 cursor-pointer">

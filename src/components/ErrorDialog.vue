@@ -1,21 +1,19 @@
 <template>
   <div
     v-if="isOpen"
-    class="fixed inset-0 z-50 overflow-auto bg-gray-500 bg-opacity-75 flex justify-center items-center"
+    class="fixed inset-0 z-50 overflow-auto bg-gray-500 bg-opacity-75 flex justify-center items-center font-londrina font-yusei"
   >
     <div
       class="relative p-6 bg-red-200 w-3/4 flex flex-col items-center justify-center text-red"
     >
-      <p
-        class="mt-10 mb-2 font-londrina font-yusei text-xl whitespace-pre-line"
-      >
+      <p class="mt-10 mb-2 text-xl whitespace-pre-line">
         {{ $t("errorDialog.message") }}
       </p>
-      <p
-        v-if="description"
-        class="mb-2 font-londrina font-yusei text-s whitespace-pre-line"
-      >
+      <p v-if="description" class="mb-2 text-s whitespace-pre-line">
         {{ description }}
+      </p>
+      <p class="mt-10 mb-2text-xl whitespace-pre-line">
+        {{ $t("errorDialog.message2") }}
       </p>
       <span class="absolute top-4 right-4 cursor-pointer">
         <button

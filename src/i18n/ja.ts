@@ -12,7 +12,7 @@ const lang = {
     goods: "グッズ",
     about: "紹介",
     terms: "利用規約",
-    tokushoho: "特定商取引法に基づく表記",
+    tokushoho: "特定商取引法",
     explanation: "重要事項説明資料",
     privacy: "プライバシーポリシー",
   },
@@ -21,8 +21,11 @@ const lang = {
     connected: "サインイン",
     signedIn: "サインアウト",
     nometamask: "メタマスク不在",
+    useMetamask:
+      "スマホの場合はメタマスクアプリのブラウザからアクセスしてください",
     switch: "切り替える",
     form: "提出フォーム",
+    switchNetwork: "ウォレットの接続先ネットワークを変更してください",
   },
   mint: {
     saleLock: "ただいまミントセールは実施しておりません",
@@ -46,6 +49,8 @@ const lang = {
   },
   errorDialog: {
     message: "エラーが発生しました。しばらく経ってからやり直してください",
+    message2:
+      "“missing revert data”が表示される場合、ETH残高が不足している可能性があります",
   },
   list: {
     description: "ここではご当地Nounsを購入することができます",
@@ -107,6 +112,7 @@ const lang = {
     finishBuyNoun: "Nounの購入に成功しました!",
     selectNounForTrade: "交換するNounを選んでください",
     finishTradeNoun: "Nounの交換に成功しました!",
+    notHasTradableNouns: "交換可能なNounを所持していません",
   },
   validator: {
     validNumber: "0より大きい数値を入力してください",
