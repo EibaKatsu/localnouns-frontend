@@ -15,7 +15,8 @@ import Explanation from "@/views/Explanation.vue";
 import Privcy from "@/views/Privacy.vue";
 import { addresses } from "@/utils/addresses";
 
-const network = "mumbai";
+// const network = "mumbai";
+const network = "mainnet";
 const routeChildren: Array<RouteRecordRaw> = [
   {
     path: "",

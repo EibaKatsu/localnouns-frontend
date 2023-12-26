@@ -96,6 +96,9 @@ const ProviderLocalNounsProvider = {
 const IAssetProvider = {
   wabi: require("@/abis/IAssetProvider.json"), // wrapped abi
 };
+const ProviderNNSENSReverseResolver = {
+  wabi: require("@/abis/NNSENSReverseResolver.json"), // wrapped abi
+};
 
 export const getSvgHelper = (network: string, provider: ProviderOrSigner) => {
   const svgHelperAddress = addresses["svgHelper"][network];
@@ -370,4 +373,27 @@ export const getLocalNounsProviderContract = (
     provider,
   );
   return tokenContract;
+};
+
+export const getNNSENSReverseResolverContract = (
+  provider: ProviderOrSigner,
+): ethers.Contract => {
+  const tokenContract = new ethers.Contract(
+    addresses.nnsens.mainnet,
+    ProviderNNSENSReverseResolver.wabi.abi,
+    provider,
+  );
+  return tokenContract;
+};
+
+export const resolveNNSorENS = async (
+  resolver: ethers.Contract,
+  address: string,
+) => {
+  try {
+    const name = await resolver.resolve(address);
+    return name ? name : address.substring(0, 6) + "...";
+  } catch (e) {
+    console.error("resolveNNSorENS", e);
+  }
 };

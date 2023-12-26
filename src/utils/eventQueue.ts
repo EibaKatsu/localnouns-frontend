@@ -10,9 +10,9 @@ type EventHandler = (event: TransferEvent) => Promise<void>;
 export class EventQueue {
   private queue: { event: TransferEvent; handler: EventHandler }[];
   private processing: number;
-  private processingLimit:number;
+  private processingLimit: number;
 
-  constructor(_processingLimit:number) {
+  constructor(_processingLimit: number) {
     this.queue = [];
     this.processing = 0;
     this.processingLimit = _processingLimit;

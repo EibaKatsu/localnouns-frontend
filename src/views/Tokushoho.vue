@@ -11,7 +11,7 @@
     </div>
     <div class="text-2xl">代表者</div>
     <div class="mb-8 space-y-2">
-      <p>○○ ○○</p>
+      <p>山下 義高</p>
     </div>
     <div class="text-2xl">所在地</div>
     <div class="mb-8 space-y-2">
