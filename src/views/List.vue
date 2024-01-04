@@ -3,6 +3,11 @@
     <p class="mb-2 font-londrina font-yusei text-xl">
       {{ $t("list.description") }}
     </p>
+    <p class="mb-2 font-londrina font-yusei text-sm text-right">
+      <router-link :to="localizedUrl('/allnouns')">
+        >>> {{ $t("list.goToAllnouns") }}</router-link
+      >
+    </p>
   </div>
 
   <div
@@ -128,6 +133,7 @@
 import { defineComponent, computed, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { useI18n } from "vue-i18n";
+import { useRoute } from "vue-router";
 import { getDocs, collection, query, where, Query } from "firebase/firestore";
 import { db } from "@/utils/firebase";
 import Prefectures from "@/components/Prefectures.vue";
@@ -166,6 +172,7 @@ export default defineComponent({
   async setup(props) {
     const store = useStore();
     const i18n = useI18n();
+    const route = useRoute();
 
     const lang = computed(() => {
       return i18n.locale.value;
@@ -210,9 +217,24 @@ export default defineComponent({
       return store.state.account;
     });
 
-    // 表示する都道府県をランダムに設定
-    const initialPrefecture = new Date().getSeconds() % 47;
-    const selectedPrefecture = ref(initialPrefecture + 1);
+    let initialPrefecture: number = 0;
+    // パラメタでidが指定されていればその都道府県を指定
+    let id: number;
+    console.log("route.params.id", route.params.id);
+    if (Array.isArray(route.params.id)) {
+      id = parseInt(route.params.id[0]);
+    } else {
+      id = parseInt(route.params.id);
+    }
+    if (id != 0) {
+      initialPrefecture = id;
+    } else {
+      // 表示する都道府県をランダムに設定
+      initialPrefecture = new Date().getSeconds() % 47;
+    }
+    const selectedPrefecture = ref(initialPrefecture);
+
+    console.log("selectedPrefecture.value ", selectedPrefecture.value);
     const selectedSortOrder = ref("newer");
     const filterType = ref("prefecture");
     const isManagementModalOpen = ref(false);

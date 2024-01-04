@@ -28,11 +28,24 @@ export default defineComponent({
   },
   setup(props) {
     const chartData = ref([["Prefecture", 0]]);
+    chartData.value = [["Prefecture", "Nouns"]];
+    Object.entries(props.groupedByPrefecture).forEach(
+      ([prefectureId, tokens]) => {
+        if (prefectureId) {
+          chartData.value.push([
+            prefectureList[Number(prefectureId)],
+            tokens.length,
+          ]);
+        }
+      },
+    );
 
     // props.groupedByPrefectureが変更されたときに実行されるwatcher
+    // Ownerページはデータの設定が遅延するのでこちらでデータセットされる
     watch(
       () => props.groupedByPrefecture,
       (newVal) => {
+        console.log("newVal", newVal);
         chartData.value = [["Prefecture", "Nouns"]];
         Object.entries(newVal).forEach(([prefectureId, tokens]) => {
           if (prefectureId) {

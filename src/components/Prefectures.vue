@@ -40,7 +40,7 @@ export default defineComponent({
     }
     // initialPrefectureが定義されていればinitialPrefecture
     const selectedValue = ref(
-      props.initialPrefecture ? props.initialPrefecture : 0,
+      props.initialPrefecture ? props.initialPrefecture - 1 : 0,
     );
 
     const updateValue = (event: { target: HTMLSelectElement }) => {

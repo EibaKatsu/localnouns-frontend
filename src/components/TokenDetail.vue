@@ -28,10 +28,27 @@
         <svg v-html="token.svg" style="width: 100%; height: auto"></svg>
       </div>
 
-      <div class="mb-2 font-londrina font-yusei text-xl">
+      <div class="mb-0 font-londrina font-yusei text-xl">
         #{{ token.tokenId }}, {{ $t("prefecture." + token.prefecture) }}
       </div>
+      <div class="mb-0 font-londrina font-yusei">
+        {{ token.head }}
+      </div>
       <div class="mb-2 font-londrina font-yusei">
+        {{ token.accessory }}
+      </div>
+    </div>
+
+    <!-- For AllNouns -->
+    <div v-if="size == 'SS'" class="flex flex-col justify-center items-center">
+      <div>
+        <img :src="imagePath" style="width: 100%; height: auto" />
+      </div>
+
+      <div class="mb-0 font-londrina font-yusei text-xl">
+        #{{ token.tokenId }}, {{ $t("prefecture." + token.prefecture) }}
+      </div>
+      <div class="mb-0 font-londrina font-yusei">
         {{ token.head }}
       </div>
       <div class="mb-2 font-londrina font-yusei">
@@ -41,6 +58,7 @@
 
     <!-- Common View -->
     <div
+      v-if="size != 'SS'"
       class="flex justify-center gap-2 w-full font-londrina font-yusei text-xl"
     >
       <div>
@@ -75,6 +93,16 @@
     <p v-if="token.salePrice > 0" class="mb-2 font-londrina font-yusei text-xl">
       {{ token.salePrice }} ETH
     </p>
+    <div v-if="token.isOnTrade" class="mb-2 font-londrina font-yusei text-sm">
+      [{{ $t("TokenSaleOrTrade.tradeForPrefecture") }}]
+      <div class="text-center">
+        {{
+          token.tradeToPrefecture
+            .map((option) => $t("prefecture." + prefectureList[option]))
+            .join(", ")
+        }}
+      </div>
+    </div>
   </div>
 
   <!-- For Token View -->
@@ -96,6 +124,7 @@
 import { defineComponent } from "vue";
 import { TOKEN } from "@/firestore/const";
 import { getAddresses } from "@/utils/const";
+import { prefectureList } from "@/i18n/prefectures";
 
 export default defineComponent({
   props: {
@@ -128,9 +157,12 @@ export default defineComponent({
       OpenSeaPath =
         OpenSeaBase + "/" + props.tokenAddress + "/" + props.token.tokenId;
     }
+    const imagePath = "/images/" + props.token.tokenId + ".svg";
 
     return {
       OpenSeaPath,
+      prefectureList,
+      imagePath,
     };
   },
 });

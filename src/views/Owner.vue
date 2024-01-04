@@ -9,13 +9,19 @@
   </div>
   <div class="px-5 py-1 flex flex-col items-center justify-center mx-5">
     <NounsMap :groupedByPrefecture="groupedByPrefecture" />
+    <p class="mb-2 font-londrina font-yusei text-2xl text-center">
+      {{ $t("owner.total") }} : {{ tokens.length }} Noun(s)
+    </p>
     <div
       v-for="tokenGroup in groupedByPrefecture"
       :key="tokenGroup.key"
       class="px-2 py-1 flex flex-col items-left justify-center"
     >
+      <hr class="border-t border-gray-600 my-4 w-full" />
       <p class="mb-2 font-londrina font-yusei text-3xl text-left mx-10">
-        {{ $t("prefecture." + tokenGroup[0].prefecture) }}
+        {{ $t("prefecture." + tokenGroup[0].prefecture) }}({{
+          tokenGroup.length
+        }})
       </p>
       <div
         class="grid w-screen grid-cols-2 place-content-center items-center gap-2 sm:grid-cols-5"
@@ -210,6 +216,7 @@ export default defineComponent({
       account,
       lang,
       groupedByPrefecture,
+      tokens,
       isManagementModalOpen,
       getTokenList,
       showTokenModal,

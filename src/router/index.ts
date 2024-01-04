@@ -6,6 +6,7 @@ import NotFound from "@/components/NotFound.vue";
 import Mint from "@/views/Mint.vue";
 import List from "@/views/List.vue";
 import Owner from "@/views/Owner.vue";
+import AllNouns from "@/views/AllNouns.vue";
 // import ComingSoon from "@/views/ComingSoon.vue";
 import Shop from "@/views/Shop.vue";
 import About from "@/views/About.vue";
@@ -14,46 +15,49 @@ import Terms from "@/views/Terms.vue";
 import Explanation from "@/views/Explanation.vue";
 import Privcy from "@/views/Privacy.vue";
 import { addresses } from "@/utils/addresses";
+import { NETWORK } from "@/config/project";
 
-// const network = "mumbai";
-const network = "mainnet";
 const routeChildren: Array<RouteRecordRaw> = [
   {
     path: "",
-    component: List,
-    props: {
-      network: network,
-      tokenAddress: addresses.localNounsToken[network],
-    },
+    redirect: "mint",
   },
   {
     path: "mint",
     component: Mint,
     props: {
-      network: network,
-      tokenAddress: addresses.localNounsToken[network],
+      network: NETWORK,
+      tokenAddress: addresses.localNounsToken[NETWORK],
       assetProvider: "localProvider",
-      minterAddress: addresses.localNounsMinter[network],
-      tokenGateAddress: addresses.tokenGate[network],
+      minterAddress: addresses.localNounsMinter[NETWORK],
+      tokenGateAddress: addresses.tokenGate[NETWORK],
+    },
+  },
+  {
+    path: "list/:id",
+    component: List,
+    props: {
+      network: NETWORK,
+      tokenAddress: addresses.localNounsToken[NETWORK],
+      // test: true,
     },
   },
   {
     path: "list",
-    component: List,
-    props: {
-      network: network,
-      tokenAddress: addresses.localNounsToken[network],
-      // test: true,
-    },
+    redirect: "/list/0",
   },
   {
     path: "owner",
     component: Owner,
     props: {
-      network: network,
-      tokenAddress: addresses.localNounsToken[network],
+      network: NETWORK,
+      tokenAddress: addresses.localNounsToken[NETWORK],
       // test: true,
     },
+  },
+  {
+    path: "allnouns",
+    component: AllNouns,
   },
   {
     path: "shop",
@@ -86,8 +90,8 @@ const routes: Array<RouteRecordRaw> = [
     path: "/:lang(ja|en)",
     component: Layout,
     props: {
-      network: network,
-      tokenAddress: addresses.localNounsToken[network],
+      network: NETWORK,
+      tokenAddress: addresses.localNounsToken[NETWORK],
     },
     children: routeChildren,
   },
@@ -95,8 +99,8 @@ const routes: Array<RouteRecordRaw> = [
     path: "",
     component: Layout,
     props: {
-      network: network,
-      tokenAddress: addresses.localNounsToken[network],
+      network: NETWORK,
+      tokenAddress: addresses.localNounsToken[NETWORK],
     },
     children: routeChildren,
   },
