@@ -13,3 +13,4 @@ export const ALCHEMY_API_KEY = "dbzRVTQMqR16Zzo764gh-c7PxiJiaWoC";
 export const NETWORK = "mumbai";
 export const SERVICE_ACCOUNT_KEY_PATH = "./serviceAccountKey.json";
 export const GOOGLE_MAPS_API_KEY = "AIzaSyByas9zm3xbwCBXQTR4yEbWofSXIpay6Jc";
+export const LOCALNOUNS_URL = "https://jp.local-nouns.wtf";

@@ -12,12 +12,22 @@ import { writeTokenDataToFirestore, updateHolderOfTokenOnFirestore, updatePriceO
 import { getTokenInfoAtMint } from "./tokenOnContract";
 import { TOKEN } from "@/firestore/const";
 import { EventQueue } from "@/utils/eventQueue";
+import { DiscordBot } from "@/utils/DiscordBot";
+import { postForPutSale, postForPutTrade } from "./postToDiscord";
+require('dotenv').config();
 
 const provider = getProvider(NETWORK, ALCHEMY_API_KEY);
 const tokenContract = getLocalNounsTokenContract(
   addresses.localNounsToken[NETWORK],
   provider,
 );
+
+const tokenForBot = process.env.DISCORD_BOT_TOKEN ? process.env.DISCORD_BOT_TOKEN:'';
+const channelId = process.env.DISCORD_ANNOUNCE_CHANNEL_ID ? process.env.DISCORD_ANNOUNCE_CHANNEL_ID:'';
+const bot = new DiscordBot(tokenForBot);
+bot.login()
+   .then(() => console.log('Discord Bot Logged in!'))
+   .catch(console.error);
 
 const eventQueue = new EventQueue(3);
 // Transferイベントの監視
@@ -53,6 +63,9 @@ tokenContract.on("SetPrice", async (tokenId, price, event) => {
     // firestoreに書き込み
     await updatePriceOfTokenOnFirestore(tokenId, Number(ethPrice));
 
+    // discordへポスト
+    await postForPutSale(bot, channelId, tokenId);
+
     console.log(`SetPrice, TokenID: ${tokenId}/${ethPrice}`);
   } catch (error) {
     console.log("SetPrice error:", new Date().toISOString());
@@ -66,6 +79,9 @@ tokenContract.on("PutTradePrefecture", async (tokenId, prefectures, tradeAddress
     console.log("prefectures", prefectures);
     // firestoreに書き込み
     await updateTradeOfTokenOnFirestore(tokenId, true, prefectures, tradeAddress);
+
+    // discordへポスト
+    await postForPutTrade(bot, channelId, tokenId);
 
     console.log(`PutTradePrefecture, TokenID: ${tokenId}/${prefectures}`);
   } catch (error) {

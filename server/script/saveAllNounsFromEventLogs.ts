@@ -2,7 +2,7 @@
   npx ts-node -r tsconfig-paths/register server/script/saveAllNounsFromEventLogs.ts
 */
 import { ALCHEMY_API_KEY, NETWORK } from "@/config/project";
-import { writeFile } from 'fs';
+import { promises, writeFile } from 'fs';
 import {
   getProvider,
   getLocalNounsTokenContract,
@@ -49,9 +49,17 @@ export const tokenInfo_ja: TOKEN[] = [
       // token情報を取得ß
       const token: TOKEN = await getTokenInfo(tokenId);
 
-      // fileに書き込み
-      await writeFile(`./public/images/${tokenId}.svg`, token.svg, () => { });
+      const filePath = `./public/images/${tokenId}.svg`;
 
+      // ファイルの存在を確認します
+      try {
+        await promises.access(filePath);
+        // console.log('ファイルは既に存在します。');
+      } catch (error) {
+        // ファイルが存在しない場合、ここでエラーが発生します
+        console.log('ファイルが存在しないため、書き込みを行います。');
+        await promises.writeFile(filePath, token.svg);
+      }
 
       // jaデータの書き込み
       const jaAccessoryParts = getPartsName('Accessories', token, 'ja');
