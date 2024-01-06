@@ -16,7 +16,7 @@ export const writeTokenDataToFirestore = async (
   tokenInfo:TOKEN
 ) => {
   // 他のドキュメントにも書くかもしれないのでトランザクションで格納しておく
-  await admin.firestore().runTransaction(async (tr) => {
+  await admin.firestore().runTransaction(async (tr:any) => {
     const tokenDocumentPath = `/${NETWORK}/${tokenAddress}/tokens/${tokenInfo.tokenId}`;
 
     await tr.set(firestore.doc(tokenDocumentPath), tokenInfo);
