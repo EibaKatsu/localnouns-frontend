@@ -51,8 +51,8 @@ export const prefectureList = [
 export const prefecture_ja = {
   NotSpecified: "指定しない",
   Hokkaido: "北海道",
-  Aomori: "青森",
-  Iwate: "岩手",
+  Aomori: "青森県",
+  Iwate: "岩手県",
   Miyagi: "宮城県",
   Akita: "秋田県",
   Yamagata: "山形県",
