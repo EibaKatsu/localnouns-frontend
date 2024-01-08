@@ -20,37 +20,48 @@ const bot = new DiscordBot(tokenForBot);
 
 const main = async () => {
 
-  await bot.login()
-    .then(() => console.log('Discord Bot Logged in!'))
-    .catch(console.error);
-
   const tokensOnSale = await getTokenList("onSale");
   const tokensOnTrade = await getTokenList("onTrade");
+
+  const listCountOnSale = tokensOnSale ? tokensOnSale.length : 0;
+  const listCountOnTrade = tokensOnTrade ? tokensOnTrade.length : 0;
 
   // メッセージを作成
   let message = `## ⭐️Now On Sale⭐️
 `;
-  tokensOnSale?.forEach(token => {
-    const prefectureName = prefecture_ja[token.prefecture as keyof typeof prefecture_ja];
-    message += ` ✅**Local Nouns #${token.tokenId} ${prefectureName}** ${token.head}, ${token.accessory} (=> ${token.salePrice} ETH)
+  if (listCountOnSale > 0) {
+    tokensOnSale?.forEach(token => {
+      const prefectureName = prefecture_ja[token.prefecture as keyof typeof prefecture_ja];
+      message += ` ✅**Local Nouns #${token.tokenId} ${prefectureName}** ${token.head}, ${token.accessory} (=> ${token.salePrice} ETH)
 `;
-  });
+    });
+  } else {
+    message += ` ただいまリスト中のご当地Nounsはありません`;
+  }
   message += `## 💫Now On Trade💫
 `;
-  tokensOnTrade?.forEach(token => {
-    const prefectureName = prefecture_ja[token.prefecture as keyof typeof prefecture_ja];
-    const tradeToPrefectures = token.tradeToPrefecture
-      .map((prefectureId) => prefecture_ja[prefectureList[prefectureId] as keyof typeof prefecture_ja])
-      .join(", ");
-    message += ` ✅**Local Nouns #${token.tokenId} ${prefectureName}** ${token.head}, ${token.accessory} (=> ${tradeToPrefectures})
+  if (listCountOnTrade > 0) {
+    tokensOnTrade?.forEach(token => {
+      const prefectureName = prefecture_ja[token.prefecture as keyof typeof prefecture_ja];
+      const tradeToPrefectures = token.tradeToPrefecture
+        .map((prefectureId) => prefecture_ja[prefectureList[prefectureId] as keyof typeof prefecture_ja])
+        .join(", ");
+      message += ` ✅**Local Nouns #${token.tokenId} ${prefectureName}** ${token.head}, ${token.accessory} (=> ${tradeToPrefectures})
 `;
-  });
+    });
+  } else {
+    message += ` ただいまリスト中のご当地Nounsはありません`;
+  }
 
   message += `
 See ${LOCALNOUNS_URL}/list/0
 `;
 
   // discordへポスト
+  await bot.login()
+    .then(() => console.log('Discord Bot Logged in!'))
+    .catch(console.error);
+
   await bot.sendMessage(channelId, message)
     .then(() => console.log('Message sent!'))
     .catch(console.error);
