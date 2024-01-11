@@ -6,6 +6,28 @@ import { prefectureList, prefecture_ja } from "@/i18n/prefectures";
 import { getPartsNameAndDescription } from "@/utils/partsDataUtil";
 import { LOCALNOUNS_URL } from "@/config/project";
 
+export async function postForMint(bot: DiscordBot, channelId: string, tokenId: string) {
+    // トークン情報を取得
+    const token: TOKEN = await getTokenInfo(tokenId);
+    const prefectureName = prefecture_ja[token.prefecture as keyof typeof prefecture_ja];
+    const headName = getPartsNameAndDescription('Heads', `${token.prefecture.toLowerCase()}-${token.head.toLowerCase()}`, 'ja')?.name;
+    const accessoryName = getPartsNameAndDescription('Accessories', `${token.prefecture.toLowerCase()}-${token.accessory.toLowerCase()}`, 'ja')?.name;
+
+    // pngファイルに保存
+    const path = await svgStreamToPngFile(token);
+
+    let message = `### 🌟ご当地Nounsが誕生しました🌟
+## Local Nouns #${tokenId} ${prefectureName}
+ヘッド    : ${headName}
+アクセサリ: ${accessoryName}
+${LOCALNOUNS_URL}/list/${token.prefectureId}
+`;
+    console.log(message);
+    bot.sendMessage(channelId, message, path)
+        .then(() => console.log('postForMint sent!'))
+        .catch(console.error);
+} 
+
 export async function postForPutSale(bot: DiscordBot, channelId: string, tokenId: string) {
     // トークン情報を取得
     const token: TOKEN = await getTokenInfo(tokenId);
@@ -16,7 +38,7 @@ export async function postForPutSale(bot: DiscordBot, channelId: string, tokenId
     // pngファイルに保存
     const path = await svgStreamToPngFile(token);
 
-    let message = `### ⭐️P2Pセール リスト情報⭐️
+    let message = `### ⭐️P2Pセールにリストされました⭐️
 ## Local Nouns #${tokenId} ${prefectureName}
 ヘッド    : ${headName}
 アクセサリ: ${accessoryName}
@@ -25,7 +47,7 @@ ${LOCALNOUNS_URL}/list/${token.prefectureId}
 `;
     console.log(message);
     bot.sendMessage(channelId, message, path)
-        .then(() => console.log('Message sent!'))
+        .then(() => console.log('postForPutSale sent!'))
         .catch(console.error);
 } 
 
@@ -42,7 +64,7 @@ export async function postForPutTrade(bot: DiscordBot, channelId: string, tokenI
     // pngファイルに保存
     const path = await svgStreamToPngFile(token);
 
-    let message = `### 💫P2Pトレード リスト情報💫
+    let message = `### 💫P2Pトレードにリストされました💫
 ## Local Nouns #${tokenId} ${prefectureName}
 ヘッド    : ${headName}
 アクセサリ: ${accessoryName}
@@ -51,7 +73,7 @@ ${LOCALNOUNS_URL}/list/${token.prefectureId}
 `;
     console.log(message);
     bot.sendMessage(channelId, message, path)
-        .then(() => console.log('Message sent!'))
+        .then(() => console.log('postForPutTrade sent!'))
         .catch(console.error);
 } 
 

@@ -1,7 +1,7 @@
 /*
   npx ts-node -r tsconfig-paths/register server/script/monitoringEvents.ts
 */
-import { ALCHEMY_API_KEY, NETWORK } from "@/config/project";
+import { ALCHEMY_API_KEY, NETWORK, DISCORD_ANNOUNCE_CHANNEL_ID } from "@/config/project";
 import {
   getProvider,
   getLocalNounsTokenContract,
@@ -13,7 +13,7 @@ import { getTokenInfoAtMint } from "./tokenOnContract";
 import { TOKEN } from "@/firestore/const";
 import { EventQueue } from "@/utils/eventQueue";
 import { DiscordBot } from "@/utils/DiscordBot";
-import { postForPutSale, postForPutTrade } from "./postToDiscord";
+import { postForMint, postForPutSale, postForPutTrade } from "./postToDiscord";
 require('dotenv').config();
 
 const provider = getProvider(NETWORK, ALCHEMY_API_KEY);
@@ -23,7 +23,6 @@ const tokenContract = getLocalNounsTokenContract(
 );
 
 const tokenForBot = process.env.DISCORD_BOT_TOKEN ? process.env.DISCORD_BOT_TOKEN:'';
-const channelId = process.env.DISCORD_ANNOUNCE_CHANNEL_ID ? process.env.DISCORD_ANNOUNCE_CHANNEL_ID:'';
 const bot = new DiscordBot(tokenForBot);
 bot.login()
    .then(() => console.log('Discord Bot Logged in!'))
@@ -41,6 +40,10 @@ tokenContract.on("Transfer", async (from, to, tokenId, event) => {
         tokenInfo.holder = to.toLowerCase();
         // firestoreに書き込み
         await writeTokenDataToFirestore(tokenInfo);
+
+        // discordへポスト
+        await postForMint(bot, DISCORD_ANNOUNCE_CHANNEL_ID, tokenId);
+
         console.log(`Write finish, mint: ${tokenId}`);
       } else {
         // P2PSale, P2PTradeの成立
@@ -64,7 +67,7 @@ tokenContract.on("SetPrice", async (tokenId, price, event) => {
     await updatePriceOfTokenOnFirestore(tokenId, Number(ethPrice));
 
     // discordへポスト
-    await postForPutSale(bot, channelId, tokenId);
+    await postForPutSale(bot, DISCORD_ANNOUNCE_CHANNEL_ID, tokenId);
 
     console.log(`SetPrice, TokenID: ${tokenId}/${ethPrice}`);
   } catch (error) {
@@ -81,7 +84,7 @@ tokenContract.on("PutTradePrefecture", async (tokenId, prefectures, tradeAddress
     await updateTradeOfTokenOnFirestore(tokenId, true, prefectures, tradeAddress);
 
     // discordへポスト
-    await postForPutTrade(bot, channelId, tokenId);
+    await postForPutTrade(bot, DISCORD_ANNOUNCE_CHANNEL_ID, tokenId);
 
     console.log(`PutTradePrefecture, TokenID: ${tokenId}/${prefectures}`);
   } catch (error) {
