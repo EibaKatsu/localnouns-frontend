@@ -394,6 +394,7 @@ export const resolveNNSorENS = async (
     const name = await resolver.resolve(address);
     return name ? name : address.substring(0, 6) + "...";
   } catch (e) {
-    console.error("resolveNNSorENS", e);
+    // console.error("resolveNNSorENS", e);
+    return address.substring(0, 6) + "...";
   }
 };

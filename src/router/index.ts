@@ -14,13 +14,14 @@ import Tokushoho from "@/views/Tokushoho.vue";
 import Terms from "@/views/Terms.vue";
 import Explanation from "@/views/Explanation.vue";
 import Privcy from "@/views/Privacy.vue";
+import Top from "@/views/Top.vue";
 import { addresses } from "@/utils/addresses";
 import { NETWORK } from "@/config/project";
 
 const routeChildren: Array<RouteRecordRaw> = [
   {
     path: "",
-    redirect: "mint",
+    component: Top,
   },
   {
     path: "mint",

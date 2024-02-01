@@ -10,122 +10,105 @@
     </p>
   </div>
 
-  <div
-    class="grid w-full grid-cols-1 place-content-center items-center items-start gap-2 sm:grid-cols-4 ml-4"
-  >
-    <!-- 都道府県-->
+  <!-- 検索条件 -->
+  <div>
     <span class="ml-2 font-londrina font-yusei text-xl">
       <label class="flex items-center">
-        <input
-          type="radio"
-          name="filterType"
-          value="prefecture"
-          v-model="filterType"
-          @change="getTokenList"
-        />
-        <div>
-          <Prefectures
-            class="mx-2 my-1"
-            :notIncludeNotSpecified="true"
-            :initialPrefecture="initialPrefecture"
-            v-model="selectedPrefecture"
-            @change="getTokenList"
-          />
-        </div>
-      </label>
-    </span>
-
-    <!-- 販売中 -->
-    <span class="ml-2 font-londrina font-yusei text-xl">
-      <label class="flex items-center">
-        <input
-          type="radio"
-          name="filterType"
-          value="onSale"
-          v-model="filterType"
-          @change="getTokenList"
-        />
-        <button
-          class="inline-block rounded bg-red-500 w-20 px-1 py-2.5 leading-tight text-white shadow-md transition duration-150 mx-2 my-2"
-          disabled
-        >
-          {{ $t("list.onSale") }}
-        </button>
-      </label>
-    </span>
-
-    <!-- トレード -->
-    <span class="ml-2 font-londrina font-yusei text-xl">
-      <label class="flex items-center">
-        <input
-          type="radio"
-          name="filterType"
-          value="onTrade"
-          v-model="filterType"
-          @change="getTokenList"
-        />
-        <button
-          class="inline-block rounded bg-blue-500 w-20 px-1 py-2.5 leading-tight text-white shadow-md transition duration-150 mx-2 my-2"
-          disabled
-        >
-          {{ $t("list.onTrade") }}
-        </button>
-      </label>
-    </span>
-
-    <!-- ソート順 -->
-    <span class="ml-2 font-londrina font-yusei text-xl">
-      <label class="flex items-center">
-        <ListSortOrder
+        <ListFilterType
           class="mx-2 my-1"
-          v-model="selectedSortOrder"
-          @change="filterTokenByCriteria"
+          v-model="filterType"
+          @change="getTokenList"
+        />
+
+        <Prefectures
+          v-if="filterType == 'prefecture'"
+          class="ml-2 mx-2 my-1"
+          :notIncludeNotSpecified="true"
+          :initialPrefecture="initialPrefecture"
+          v-model="selectedPrefecture"
+          @change="getTokenList"
         />
       </label>
     </span>
   </div>
+
   <div
-    class="grid w-screen grid-cols-2 place-content-center items-center gap-2 sm:grid-cols-5"
+    v-if="!account && filterType == 'myNouns'"
+    class="mb-2 font-londrina font-yusei text-2xl text-center"
   >
+    {{ $t("list.connectWallet") }}
+  </div>
+
+  <div
+    v-if="filterType != 'prefecture'"
+    class="px-5 py-1 flex flex-col items-center justify-center mx-5"
+  >
+    <hr class="border-t border-gray-600 my-4 w-full" />
+    <NounsMap :groupedByPrefecture="groupedByPrefecture" />
+    <p class="mb-2 font-londrina font-yusei text-2xl text-center">
+      {{ $t("owner.total") }} : {{ tokensForDisplay.length }} Noun(s) /
+      {{ Object.keys(groupedByPrefecture).length }}
+      {{ $t("owner.prefectures") }}
+    </p>
+  </div>
+  <div
+    v-for="tokenGroup in groupedByPrefecture"
+    :key="tokenGroup.key"
+    class="px-2 py-1 flex flex-col items-left justify-center"
+  >
+    <hr class="border-t border-gray-600 my-4 w-full" />
+    <p class="mb-2 font-londrina font-yusei text-3xl text-left mx-10">
+      {{ $t("prefecture." + tokenGroup[0].prefecture) }}({{
+        tokenGroup.length
+      }})
+    </p>
+
     <div
-      v-for="token in tokensForDisplay"
-      :key="token.key"
-      class="px-2 py-6 flex flex-col items-center justify-center"
+      class="grid w-screen grid-cols-2 place-content-center items-center gap-2 sm:grid-cols-5"
     >
-      <div @click="showTokenModal(token)" class="items-center justify-center">
-        <TokenDetail :token="token" size="S" />
+      <div
+        v-for="token in tokenGroup"
+        :key="token.key"
+        class="px-2 py-6 flex flex-col items-center justify-center"
+      >
+        <div
+          @click="showTokenModal(token)"
+          class="cursor-pointer items-center justify-center"
+        >
+          <TokenDetail :token="token" size="S" />
+        </div>
+
+        <span
+          v-if="token.holder.toLowerCase() == account"
+          class="ml-2 font-londrina font-yusei text-xl"
+        >
+          <button
+            class="inline-block rounded bg-green-500 w-20 px-1 py-2.5 leading-tight text-white shadow-md transition duration-150 my-2"
+          >
+            {{ $t("list.manage") }}
+          </button>
+        </span>
       </div>
 
-      <span
-        v-if="token.holder.toLowerCase() == account"
-        class="ml-2 font-londrina font-yusei text-xl"
-      >
-        <button
-          class="inline-block rounded bg-green-500 w-20 px-1 py-2.5 leading-tight text-white shadow-md transition duration-150 my-2"
-        >
-          {{ $t("list.manage") }}
-        </button>
-      </span>
+      <TokenManagement
+        v-if="selectedToken"
+        :network="network"
+        :tokenAddress="tokenAddress"
+        :isOpen="isManagementModalOpen"
+        :token="selectedToken"
+        @close="closeTokenModal"
+      />
+
+      <TokenSaleOrTrade
+        v-if="selectedToken"
+        :network="network"
+        :tokenAddress="tokenAddress"
+        :isOpen="isSaleOrTradeModalOpen"
+        :token="selectedToken"
+        :myTokens="myTokens"
+        @close="closeTokenModal"
+      />
     </div>
-
-    <TokenManagement
-      v-if="selectedToken"
-      :network="network"
-      :tokenAddress="tokenAddress"
-      :isOpen="isManagementModalOpen"
-      :token="selectedToken"
-      @close="closeTokenModal"
-    />
-
-    <TokenSaleOrTrade
-      v-if="selectedToken"
-      :network="network"
-      :tokenAddress="tokenAddress"
-      :isOpen="isSaleOrTradeModalOpen"
-      :token="selectedToken"
-      :myTokens="myTokens"
-      @close="closeTokenModal"
-    />
   </div>
 </template>
 
@@ -137,14 +120,16 @@ import { useRoute } from "vue-router";
 import { getDocs, collection, query, where, Query } from "firebase/firestore";
 import { db } from "@/utils/firebase";
 import Prefectures from "@/components/Prefectures.vue";
-import ListSortOrder from "@/components/ListSortOrder.vue";
+import ListFilterType from "@/components/ListFilterType.vue";
 import TokenDetail from "@/components/TokenDetail.vue";
 import TokenManagement from "@/components/TokenManagement.vue";
 import TokenSaleOrTrade from "@/components/TokenSaleOrTrade.vue";
+import NounsMap from "@/components/NounsMap.vue";
 import { prefectureList } from "@/i18n/prefectures";
 import { TOKEN } from "@/firestore/const";
 import { getPartsNameAndDescription } from "@/utils/partsDataUtil";
 import { getTokenListForTest } from "@/utils/testData";
+import { ADMINISTRATORS_ADDRESS } from "@/config/project";
 
 export default defineComponent({
   props: {
@@ -164,10 +149,11 @@ export default defineComponent({
   name: "List",
   components: {
     Prefectures,
-    ListSortOrder,
+    ListFilterType,
     TokenDetail,
     TokenManagement,
     TokenSaleOrTrade,
+    NounsMap,
   },
   async setup(props) {
     const store = useStore();
@@ -308,6 +294,13 @@ export default defineComponent({
           tokenQuery = query(tokenQuery, where("salePrice", ">", 0));
         } else if (filterType.value == "onTrade") {
           tokenQuery = query(tokenQuery, where("isOnTrade", "==", true));
+        } else if (filterType.value == "myNouns") {
+          tokenQuery = query(tokenQuery, where("holder", "==", account.value));
+        } else if (filterType.value == "admins") {
+          tokenQuery = query(
+            tokenQuery,
+            where("holder", "==", ADMINISTRATORS_ADDRESS.toLowerCase()),
+          );
         } else {
           tokenQuery = query(
             tokenQuery,
@@ -331,6 +324,27 @@ export default defineComponent({
       getPartsName(tokens.value);
     };
     getTokenList();
+
+    // トークンを都道府県IDでグループ化するcomputedプロパティ
+    const groupedByPrefecture = computed(() => {
+      // 最初にtokensをtokenIdでソート
+      const sortedTokens = [...tokensForDisplay.value].sort((a, b) => {
+        return Number(a.tokenId) - Number(b.tokenId);
+      });
+
+      const groups = sortedTokens.reduce((acc: any, token) => {
+        // prefectureIdをキーとする
+        const key = token.prefectureId;
+        if (!acc[key]) {
+          // キーが存在しなければ、新しい配列を作成
+          acc[key] = [];
+        }
+        // トークンをキーに対応する配列に追加
+        acc[key].push(token);
+        return acc;
+      }, {}); // 初期値は空のオブジェクト
+      return groups;
+    });
 
     const selectedToken = ref<TOKEN | null>(null);
 
@@ -366,6 +380,7 @@ export default defineComponent({
       isManagementModalOpen,
       isSaleOrTradeModalOpen,
       getTokenList,
+      groupedByPrefecture,
       showTokenModal,
       closeTokenModal,
       selectedToken,

@@ -10,7 +10,9 @@
   <div class="px-5 py-1 flex flex-col items-center justify-center mx-5">
     <NounsMap :groupedByPrefecture="groupedByPrefecture" />
     <p class="mb-2 font-londrina font-yusei text-2xl text-center">
-      {{ $t("owner.total") }} : {{ tokens.length }} Noun(s)
+      {{ $t("owner.total") }} : {{ tokens.length }} Noun(s) /
+      {{ Object.keys(groupedByPrefecture).length }}
+      {{ $t("owner.prefectures") }}
     </p>
     <div
       v-for="tokenGroup in groupedByPrefecture"

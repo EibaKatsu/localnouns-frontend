@@ -19,7 +19,7 @@ export class EventQueue {
   }
 
   private async processNext(): Promise<void> {
-    if (this.processing > this.processingLimit || this.queue.length === 0) {
+    if (this.processing >= this.processingLimit || this.queue.length === 0) {
       return;
     }
 

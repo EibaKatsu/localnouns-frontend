@@ -16,3 +16,13 @@ export const GOOGLE_MAPS_API_KEY = "AIzaSyByas9zm3xbwCBXQTR4yEbWofSXIpay6Jc";
 export const LOCALNOUNS_URL = "https://jp.local-nouns.wtf";
 export const DISCORD_ANNOUNCE_CHANNEL_ID = "1030992113799798799"; // テスト用 (えいば2サーバ)
 // export const DISCORD_ANNOUNCE_CHANNEL_ID = "1091988269648064543"; // 本番用 (NDJ 候bot)
+export const MINT_BY_CC_URL =
+  "https://testnets.paypiement.xyz/projects/2818b1fe-ceaa-453a-a5f9-b8a38fc3d35f"; // テスト
+// "https://paypiement.xyz/projects/71b06bdc-7536-4bee-be4d-066176b93b06"; // 本番
+export const MINT_NOT_SPECIFIED_BY_CC_URL =
+  "https://testnets.paypiement.xyz/projects/86d43dd4-a52a-4cbb-9052-d99e475ea571"; // テスト
+// "https://paypiement.xyz/projects/71b06bdc-7536-4bee-be4d-066176b93b06"; // 本番
+export const TWITTER_URL = "https://twitter.com/LocalNouns_jp";
+export const DISCORD_URL = "https://discord.gg/CMNkP3QGbW";
+export const ADMINISTRATORS_ADDRESS =
+  "0xA0B9D89F6d17658EAA71fC0b916fCCB248340382"; // 運営アドレス

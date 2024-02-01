@@ -15,13 +15,14 @@ export class DiscordBot {
     return this.client.login(this.token);
   }
 
-  async sendMessage(channelId: string, message: string, imagePath?: string) {
+  async sendMessage(channelId: string, message: string, imagePaths?: string[]) {
     const channel = await this.client.channels.fetch(channelId);
     if (!channel) throw new Error("Channel not found");
     if (channel.isText()) {
       const textChannel = channel as TextChannel;
-      if (imagePath) {
-        return textChannel.send({ content: message, files: [imagePath] });
+      if (imagePaths && imagePaths.length > 0) {
+        const files = imagePaths.map((path) => ({ attachment: path }));
+        return textChannel.send({ content: message, files: files });
       } else {
         return textChannel.send({ content: message });
       }

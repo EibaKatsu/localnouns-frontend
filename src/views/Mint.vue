@@ -142,6 +142,43 @@
               >
                 {{ $t("mint.mint") }}
               </button>
+
+              <span
+                v-if="
+                  checkExplanation &&
+                  checkTerms &&
+                  checkTokushoho &&
+                  checkPrivacy
+                "
+              >
+                <!-- ミントボタン(クレジットカード) 都道府県指定なし-->
+                <button
+                  v-if="selectedPrefecture == 0"
+                  class="inline-block rounded bg-green-600 mt-5 px-6 py-2.5 leading-tight text-white text-3xl shadow-md transition duration-150 ease-in-out hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg"
+                >
+                  <a :href="mintByCCUrl">
+                    {{ $t("mint.mintCC") }}
+                  </a>
+                </button>
+                <!-- ミントボタン(クレジットカード) 都道府県指定あり-->
+                <button
+                  v-else
+                  class="inline-block rounded bg-green-600 mt-5 px-6 py-2.5 leading-tight text-white text-3xl shadow-md transition duration-150 ease-in-out hover:bg-green-700 hover:shadow-lg focus:bg-green-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-green-800 active:shadow-lg"
+                >
+                  <a :href="mintNotSpecifiedByCCUrl">
+                    {{ $t("mint.mintCC") }}
+                  </a>
+                </button>
+              </span>
+              <span v-else>
+                <!-- 各種条件チェック前 -->
+                <button
+                  disabled
+                  class="inline-block rounded bg-gray-600 mt-5 px-6 py-2.5 leading-tight text-white text-3xl shadow-md transition duration-150 ease-in-out hover:bg-gray-700 hover:shadow-lg focus:bg-gray-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-gray-800 active:shadow-lg"
+                >
+                  {{ $t("mint.mintCC") }}
+                </button>
+              </span>
             </span>
             <a
               v-if="hashLink && isMinting"
@@ -225,6 +262,7 @@ import Prefectures from "@/components/Prefectures.vue";
 import NumOfMint from "@/components/NumOfMint.vue";
 import FinishMintDialog from "@/components/FinishMintDialog.vue";
 import ErrorDialog from "@/components/ErrorDialog.vue";
+import { MINT_BY_CC_URL, MINT_NOT_SPECIFIED_BY_CC_URL } from "@/config/project";
 
 export default defineComponent({
   props: {
@@ -344,6 +382,14 @@ export default defineComponent({
       await fetchTokens();
     };
 
+    const mintByCCUrl = computed(() => {
+      return `${MINT_BY_CC_URL}?quantity=${selectedNumOfMint.value}&recipientAddress=${account.value}`;
+    });
+
+    const mintNotSpecifiedByCCUrl = computed(() => {
+      return `${MINT_NOT_SPECIFIED_BY_CC_URL}?prefectureId=${selectedPrefecture.value}&quantity=${selectedNumOfMint.value}&recipientAddress=${account.value}`;
+    });
+
     const mint = async () => {
       const chainId = ChainIdMap[props.network];
       const signer = await store.getters.getSigner(chainId);
@@ -431,6 +477,8 @@ export default defineComponent({
       checkTerms,
       checkTokushoho,
       checkPrivacy,
+      mintByCCUrl,
+      mintNotSpecifiedByCCUrl,
     };
   },
 });
