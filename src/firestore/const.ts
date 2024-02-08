@@ -46,4 +46,16 @@ export interface HOLDER {
   addressName: string;
   numOfHold: number;
   timestamp?: Date | undefined;
+  tokens?: TOKEN[];
+}
+export enum COUNTER_TYPE {
+  DAILY = "DAILY",
+  MONTHLY = "MONTHLY",
+}
+export interface COUNTER {
+  counterType: COUNTER_TYPE;
+  key: string;
+  numOfMint: number;
+  numOfSale: number;
+  numOfTrade: number;
 }

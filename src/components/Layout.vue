@@ -18,12 +18,12 @@
         class="font-londrina font-yusei text-xl"
         >{{ $t("nav.list") }}</router-link
       >
-      <!-- |
+      |
       <router-link
-        :to="localizedUrl('/owner')"
+        :to="localizedUrl('/statistics')"
         class="font-londrina font-yusei text-xl"
-        >{{ $t("nav.owner") }}</router-link
-      > -->
+        >{{ $t("nav.statistics") }}</router-link
+      >
       <Languages class="mt-4" />
       <Connect v-if="displayWallet" :network="network" />
     </div>

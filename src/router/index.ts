@@ -6,6 +6,7 @@ import NotFound from "@/components/NotFound.vue";
 import Mint from "@/views/Mint.vue";
 import List from "@/views/List.vue";
 import Owner from "@/views/Owner.vue";
+import Statistics from "@/views/Statistics.vue";
 import AllNouns from "@/views/AllNouns.vue";
 // import ComingSoon from "@/views/ComingSoon.vue";
 import Shop from "@/views/Shop.vue";
@@ -54,6 +55,14 @@ const routeChildren: Array<RouteRecordRaw> = [
       network: NETWORK,
       tokenAddress: addresses.localNounsToken[NETWORK],
       // test: true,
+    },
+  },
+  {
+    path: "statistics",
+    component: Statistics,
+    props: {
+      network: NETWORK,
+      tokenAddress: addresses.localNounsToken[NETWORK],
     },
   },
   {

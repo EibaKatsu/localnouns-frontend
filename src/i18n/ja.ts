@@ -6,6 +6,7 @@ const lang = {
     top: "トップ",
     mint: "ミント",
     list: "マーケット",
+    statistics: "統計情報",
     owner: "マイページ",
     p2pSale: "P2Pセール",
     p2pTrade: "P2Pトレード",
@@ -62,6 +63,12 @@ const lang = {
     manage: "所有",
     goToAllnouns: "全てのご当地Nounsを見る",
     connectWallet: "先にウォレット接続してください",
+  },
+  statistics: {
+    description: "ご当地Nouns 統計情報",
+    owners: "オーナー(top20)",
+    last30days: "取引実績(直近30日)",
+    fromStart: "取引実績(開始〜)",
   },
   owner: {
     description: "あなたの所有するご当地Nounsです",

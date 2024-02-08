@@ -6,6 +6,7 @@ const lang = {
     top: "Top",
     mint: "Mint",
     list: "Market",
+    statistics: "Statistics",
     owner: "MyPage",
     p2pSale: "P2PSale",
     p2pTrade: "P2PTrade",
@@ -63,6 +64,12 @@ const lang = {
     manage: "Owner",
     goToAllnouns: "Go to All Nouns",
     connectWallet: "Connect Wallet from above right button.",
+  },
+  statistics: {
+    description: "Local Nouns Statistics",
+    owners: "Owners(top20)",
+    last30days: "last 30 days records",
+    fromStart: "Since start",
   },
   owner: {
     description: "These are your local Nouns that you own.",
