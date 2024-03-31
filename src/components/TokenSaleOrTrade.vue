@@ -265,7 +265,7 @@ export default {
       const contract = await getContract(props.network);
       isTradeBusy.value = true;
       try {
-        const txParams = { value: ethers.parseEther("0.003") };
+        const txParams = { value: ethers.parseEther("0.0015") };
         const tx = await contract.executeTradeLocalNoun(
           selectedMyTokenId,
           props.token.tokenId,
