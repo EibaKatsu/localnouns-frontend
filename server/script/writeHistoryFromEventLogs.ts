@@ -34,7 +34,7 @@ const mint = async () => {
       // eventからto, tokenIdを取得
       const { to, from, tokenId } = event.args;
 
-      if (tokenId > 10) {
+      if (tokenId < 709) {
         continue;
       }
 

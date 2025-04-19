@@ -32,9 +32,9 @@ const main = async () => {
       // eventからto, tokenIdを取得
       const { to, tokenId } = event.args;
 
-      // if(tokenId < 267){
-      //   continue;
-      // }
+      if(tokenId < 737){
+        continue;
+      }
 
       // token情報を取得ß
       const tokenInfo: TOKEN = await getTokenInfo(tokenId);

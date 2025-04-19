@@ -15,7 +15,7 @@ bot.login()
 
 const main = async () => {
   // discordへポスト
-  for(var i=551; i<=551; i++){
+  for(var i=744; i<=744; i++){
     await postForMint(bot, DISCORD_ANNOUNCE_CHANNEL_ID, String(i));
   }
 
